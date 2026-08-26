@@ -2,6 +2,8 @@
 
 > **Primary:** GitHub. GitLab (`virginia-perpetua/design-system/*`) is a mirror.
 
+**Site:** [https://assets.design.virgiperpetua.com](https://assets.design.virgiperpetua.com) (GitHub Pages from `dist/`).
+
 Binary brand assets — wordmark, VP mark, portrait, banners, Open Graph / LinkedIn art, and page screenshots from the Claude Design portfolio.
 
 Token values live in [`tokens`](https://github.com/virgiperpetua/tokens). Marketing pages live in [`marketing`](https://github.com/virgiperpetua/marketing). Brand rules: [BRAND.md](./BRAND.md). Design export specs: [docs/design-export/](./docs/design-export/).
@@ -40,3 +42,19 @@ When served from Pages (or a CDN), treat `dist/` as the site root:
 /og-image/linkedin-banner.png
 /screenshots/pages/{home|about|projects|resume|contact|linkedin-banner|brand-system-spec}.png
 ```
+
+## Portrait sizes
+
+Master: `photo/virginia-photo.png` (1254²). Reuse these for apps and metadata:
+
+| Use | Path |
+| --- | --- |
+| Favicon | `photo/favicon-16x16.png`, `photo/favicon-32x32.png` |
+| Apple touch | `photo/apple-touch-icon.png` (180) |
+| PWA / Android | `photo/android-chrome-192x192.png`, `photo/android-chrome-512x512.png` |
+| Social avatar | `photo/og-avatar.jpg` (1200²) |
+| Size ladder (PNG + WebP) | `photo/sizes/{32,48,64,96,128,180,192,256,512,1024}.{png,webp}` |
+| Web manifest | `photo/site.webmanifest` |
+
+CDN-style: `/photo/sizes/256.webp`, `/photo/apple-touch-icon.png`.
+
