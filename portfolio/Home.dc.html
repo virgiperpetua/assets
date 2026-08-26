@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-41d1a528-5cf6-4a5c-84d4-f7ff95c3a42d/styles.css">
+<script src="_ds/modernist-41d1a528-5cf6-4a5c-84d4-f7ff95c3a42d/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style id="__om-edit-overrides"></style>
+<style>
+  :root{
+    --color-accent:#9b6ff3;--color-accent-100:#f5f1fe;--color-accent-200:#e9defd;--color-accent-300:#d3c0fb;
+    --color-accent-400:#b494f7;--color-accent-500:#9b6ff3;--color-accent-600:#8451e8;--color-accent-700:#6935c4;
+    --color-accent-800:#4f2696;--color-accent-900:#37196a;
+  }
+  body{margin:0}
+  .navlink{font-family:var(--font-heading);font-weight:800;font-size:13px;letter-spacing:.02em;color:var(--color-text);text-decoration:none;padding:6px 0;border-bottom:2px solid transparent;transition:border-color 120ms ease-out}
+  .navlink:hover{border-color:var(--color-accent)}
+  .navlink.active{border-color:var(--color-accent);color:var(--color-accent-700)}
+  .pillar-card{transition:transform 200ms cubic-bezier(.2,.8,.2,1)}
+  .tag,.btn{white-space:nowrap}
+  .pillar-card:hover{transform:translateY(-4px)}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr!important}
+    .hero-photo{order:-1;max-width:220px;margin:0 auto}
+    .pillars-grid{grid-template-columns:1fr!important}
+    .stage-row{grid-template-columns:1fr!important}
+    .nav-links{gap:16px!important}
+    .evidence-row{grid-template-columns:1fr!important}
+  }
+  @media (max-width:600px){
+    .page-pad{padding-left:20px!important;padding-right:20px!important}
+    .nav-pad{padding-left:20px!important;padding-right:20px!important}
+    h1{font-size:34px!important}
+  }
+</style>
+</helmet>
+
+<div style="background:var(--color-bg);min-height:100vh">
+
+<nav class="nav-pad" style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:var(--color-bg);border-bottom:2px solid var(--color-divider)">
+  <a href="Home.dc.html" style="font-family:var(--font-heading);font-weight:800;font-size:17px;color:var(--color-text);text-decoration:none;letter-spacing:-.01em">VIRGINIA PERPETUA</a>
+  <div class="nav-links" style="display:flex;gap:28px;align-items:center;flex-wrap:wrap">
+    <a href="Home.dc.html" class="navlink active">Home</a>
+    <a href="About.dc.html" class="navlink">About</a>
+    <a href="Projects.dc.html" class="navlink">Projects</a>
+    <a href="Resume.dc.html" class="navlink">Resume</a>
+    <a href="Contact.dc.html" class="btn btn-primary" style="text-decoration:none">Contact</a>
+  </div>
+</nav>
+
+<section class="page-pad" style="padding:72px 48px 64px;max-width:1200px;margin:0 auto">
+  <div class="hero-grid" style="display:grid;grid-template-columns:1.4fr 0.8fr;gap:56px;align-items:center">
+    <div>
+      <div style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.06em;color:var(--color-accent-700);margin-bottom:14px">MELBOURNE, AU · IT GRADUATE, 2026</div>
+      <h1 style="font-size:54px;line-height:1.05;margin:0 0 20px;max-width:640px">I turn shop-floor friction into working software.</h1>
+      <p style="font-size:17px;line-height:1.6;color:var(--color-text);max-width:520px;margin:0 0 28px">Full-stack engineer in training, currently exploring AI and automation. I manage a gelato store by day and build the tools that store actually needed — the same instinct for noticing what's broken, now pointed at bigger problems.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="Projects.dc.html#gelato" class="btn btn-primary" style="text-decoration:none">View the gelato project</a>
+        <a href="Resume.dc.html" class="btn btn-secondary" style="text-decoration:none">Resume</a>
+      </div>
+    </div>
+    <div class="hero-photo" style="width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:2px solid var(--color-divider);justify-self:end">
+      <img src="assets/virginia-photo.png" alt="Portrait of Virginia Perpetua" class="grayscale" style="width:100%;height:100%;object-fit:cover;display:block">
+    </div>
+  </div>
+</section>
+
+<hr class="hr" style="margin:0">
+
+<section class="page-pad" style="padding:40px 48px;max-width:1200px;margin:0 auto">
+  <div class="evidence-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;font-family:ui-monospace,Menlo,monospace;font-size:13px">
+    <div><div style="color:var(--color-accent-700);margin-bottom:4px">01</div>Built while running daily operations — not a classroom brief</div>
+    <div><div style="color:var(--color-accent-700);margin-bottom:4px">02</div>Shipped for real, everyday production use at Gelato Messina</div>
+    <div><div style="color:var(--color-accent-700);margin-bottom:4px">03</div>3 languages, 4 workplaces, one habit: notice what's slow, fix it</div>
+  </div>
+</section>
+
+<hr class="hr" style="margin:0">
+
+<section id="gelato" class="page-pad" style="padding:64px 48px;max-width:1200px;margin:0 auto">
+  <h6 style="color:var(--color-accent-700)">Featured project</h6>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:16px">
+    <div>
+      <image-slot id="home-gelato-shot" style="width:100%;height:340px" shape="rect" placeholder="Drop a photo of the churner floor / app screen"></image-slot>
+    </div>
+    <div>
+      <h2 style="margin-bottom:14px">A production tool for the store I run</h2>
+      <p style="font-size:15px;line-height:1.65;color:var(--color-text);margin:0 0 16px">As Store Manager at Gelato Messina, I kept seeing the same problem: knowing which flavours needed churning, how much stock was left, and when production should start meant constantly checking a phone or walking the floor. So I built a tool that shows it at a glance — flavour status, stock consumption, and churn timing, in one screen.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+        <span class="tag tag-outline">Self-initiated</span>
+        <span class="tag tag-outline">In production use</span>
+        <span class="tag tag-accent">Full-stack</span>
+      </div>
+      <a href="Projects.dc.html#gelato-case-study" class="navlink" style="border-bottom-color:var(--color-accent)">Read the full case study →</a>
+    </div>
+  </div>
+</section>
+
+<hr class="hr" style="margin:0">
+
+<section class="page-pad" style="padding:64px 48px;max-width:1200px;margin:0 auto">
+  <h6 style="color:var(--color-accent-700)">How I think</h6>
+  <h2 style="margin:12px 0 32px">Three ideas I keep coming back to</h2>
+  <div class="pillars-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+    <div class="pillar-card card" style="padding:24px">
+      <div class="card-kicker">01</div>
+      <div class="card-title" style="font-size:20px">Make complex things simple</div>
+      <p class="card-body" style="font-size:14px;opacity:.85">A busy store floor doesn't need more data — it needs the right three numbers, visible fast. That filter is the job.</p>
+    </div>
+    <div class="pillar-card card" style="padding:24px">
+      <div class="card-kicker">02</div>
+      <div class="card-title" style="font-size:20px">Build useful things</div>
+      <p class="card-body" style="font-size:14px;opacity:.85">I'd rather ship something small that removes a real friction than something impressive that nobody needed.</p>
+    </div>
+    <div class="pillar-card card" style="padding:24px">
+      <div class="card-kicker">03</div>
+      <div class="card-title" style="font-size:20px">Experiment with new technology</div>
+      <p class="card-body" style="font-size:14px;opacity:.85">AI and automation are moving fast enough that curiosity, not credentials, is what keeps you useful. I'd rather try things early.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="hr" style="margin:0">
+
+<section class="page-pad" style="padding:64px 48px;max-width:1200px;margin:0 auto;background:var(--color-surface)">
+  <h6 style="color:var(--color-accent-700)">Where I'm heading</h6>
+  <h2 style="margin:12px 0 32px">Foundation, exploration, direction</h2>
+  <div class="stage-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+    <div>
+      <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:var(--color-text);opacity:.6;margin-bottom:10px">CURRENT FOUNDATION</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="tag tag-neutral">JavaScript / TypeScript</span>
+        <span class="tag tag-neutral">Python</span>
+        <span class="tag tag-neutral">SQL / Databases</span>
+        <span class="tag tag-neutral">Git</span>
+        <span class="tag tag-neutral">UI / UX</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:var(--color-accent-700);margin-bottom:10px">ACTIVE EXPLORATION</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="tag tag-outline">AI / ML fundamentals</span>
+        <span class="tag tag-outline">Automation tooling</span>
+        <span class="tag tag-outline">Practical AI applications</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:var(--color-text);opacity:.6;margin-bottom:10px">~3 YEAR DIRECTION</div>
+      <p style="font-size:14px;line-height:1.6;margin:0">Strong enough in AI and automation to build genuinely better solutions to everyday problems — the gelato project, at a bigger scale.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="hr" style="margin:0">
+
+<section class="page-pad" style="padding:64px 48px;max-width:1200px;margin:0 auto">
+  <h6 style="color:var(--color-accent-700)">Selected additional work</h6>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
+    <a href="Projects.dc.html" style="text-decoration:none;color:inherit" class="card" style="padding:24px;display:flex;flex-direction:column;gap:8px">
+      <div class="card-kicker">Personal project</div>
+      <div class="card-title" style="font-size:18px">More case studies, in progress</div>
+      <p class="card-body" style="font-size:13px;opacity:.8">University and personal projects are being written up as standard project pages — check back soon.</p>
+    </a>
+    <a href="Projects.dc.html" style="text-decoration:none;color:inherit" class="card" style="padding:24px;display:flex;flex-direction:column;gap:8px;border:1px dashed var(--color-divider);background:transparent">
+      <div class="card-kicker" style="color:var(--color-text);opacity:.6">Coming next</div>
+      <div class="card-title" style="font-size:18px">Playground: AI &amp; automation experiments</div>
+      <p class="card-body" style="font-size:13px;opacity:.8">A space for small, in-progress explorations — not required to be finished to be worth sharing.</p>
+    </a>
+  </div>
+</section>
+
+<hr class="hr" style="margin:0">
+
+<section class="page-pad" style="padding:56px 48px;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <div>
+    <h3 style="margin-bottom:6px">Looking for graduate and junior full-stack roles.</h3>
+    <p style="margin:0;color:var(--color-text);opacity:.75">Open to conversations about AI, automation, and practical software.</p>
+  </div>
+  <div style="display:flex;gap:12px">
+    <a href="Contact.dc.html" class="btn btn-primary" style="text-decoration:none">Get in touch</a>
+    <a href="Resume.dc.html" class="btn btn-secondary" style="text-decoration:none">View resume</a>
+  </div>
+</section>
+
+<footer class="page-pad" style="padding:28px 48px;border-top:2px solid var(--color-divider);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--color-text);opacity:.7">
+  <div>© 2026 Virginia Perpetua</div>
+  <div style="display:flex;gap:20px">
+    <a href="mailto:virgiperpetua@gmail.com" style="color:var(--color-text)">virgiperpetua@gmail.com</a>
+    <a href="https://github.com/virgiperpetua" style="color:var(--color-text)">github.com/virgiperpetua</a>
+  </div>
+</footer>
+
+</div>
+
+</x-dc>
+</body>
+</html>

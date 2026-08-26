@@ -1,0 +1,71 @@
+{
+  "source": "/home/virgiperpetua/src/virgiperpetua/assets/main/portfolio",
+  "out": "/home/virgiperpetua/src/virgiperpetua/assets/main/portfolio/ai-export",
+  "generatedAt": "2026-08-26T07:52:13.175Z",
+  "width": 1440,
+  "pages": [
+    {
+      "source": "About.dc.html",
+      "slug": "about",
+      "kind": "page",
+      "title": "Management first, engineering second — the same instinct.",
+      "md": "about.md",
+      "png": "about.png",
+      "lockups": []
+    },
+    {
+      "source": "Brand-System-Spec.dc.html",
+      "slug": "brand-system-spec",
+      "kind": "page",
+      "title": "Virginia Perpetua",
+      "md": "brand-system-spec.md",
+      "png": "brand-system-spec.png",
+      "lockups": []
+    },
+    {
+      "source": "Contact.dc.html",
+      "slug": "contact",
+      "kind": "page",
+      "title": "Open to graduate and junior engineering roles — and to good conversations about AI and automation.",
+      "md": "contact.md",
+      "png": "contact.png",
+      "lockups": []
+    },
+    {
+      "source": "Home.dc.html",
+      "slug": "home",
+      "kind": "page",
+      "title": "I turn shop-floor friction into working software.",
+      "md": "home.md",
+      "png": "home.png",
+      "lockups": []
+    },
+    {
+      "source": "LinkedIn-Banner.dc.html",
+      "slug": "linkedin-banner",
+      "kind": "page",
+      "title": "I turn real problems into useful software.",
+      "md": "linkedin-banner.md",
+      "png": "linkedin-banner.png",
+      "lockups": []
+    },
+    {
+      "source": "Projects.dc.html",
+      "slug": "projects",
+      "kind": "page",
+      "title": "Evidence, ranked by how real it is.",
+      "md": "projects.md",
+      "png": "projects.png",
+      "lockups": []
+    },
+    {
+      "source": "Resume.dc.html",
+      "slug": "resume",
+      "kind": "page",
+      "title": "Virginia Perpetua",
+      "md": "resume.md",
+      "png": "resume.png",
+      "lockups": []
+    }
+  ]
+}

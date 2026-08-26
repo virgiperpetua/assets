@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Churn Sheet — Gelato Production Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F5F3; --surface:#FFFFFF; --surface-2:#FBFBFA;
+  --ink:#182420; --ink-soft:#5C6B66; --ink-faint:#8B9793;
+  --line:#DCE1DD; --line-soft:#EAEDE9;
+  --teal:#134A4D; --teal-ink:#0D3536; --teal-soft:#E3EEEC;
+  --copper:#B9793C; --copper-soft:#F6E9D8;
+  --red:#B23A2E; --red-soft:#FBE6E3; --red-ink:#7A281F;
+  --amber:#B3792A; --amber-soft:#FBEEDA; --amber-ink:#7A5216;
+  --green:#2C7A55; --green-soft:#E3F2EA; --green-ink:#1E5A3E;
+  --radius:10px; --radius-sm:6px; --radius-lg:16px;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --shadow: 0 1px 2px rgba(19,74,77,0.06), 0 4px 14px rgba(19,74,77,0.05);
+  --groupA:#C9BFA0; --groupA-ink:#5B5136;
+  --groupB:#8A6142; --groupB-ink:#3A2416;
+  --groupC:#7E9A63; --groupC-ink:#3A4A2A;
+  --groupD:#C79A56; --groupD-ink:#5C4218;
+  --groupE:#7FB0A3; --groupE-ink:#2C4C43;
+  --groupF:#A9C6C0; --groupF-ink:#2E4A44;
+  --groupG:#CE7C61; --groupG-ink:#5C2C1E;
+}
+*{box-sizing:border-box;}
+svg{width:18px; height:18px; display:block; flex-shrink:0;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased; overscroll-behavior-y:none;
+  padding-bottom:78px;
+}
+h1,h2,h3,.disp{font-family:var(--font-display); letter-spacing:-0.01em;}
+button{font-family:inherit;}
+.mono{font-family:var(--font-mono);}
+a{color:inherit;}
+::selection{background:var(--teal-soft);}
+:focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+
+#app{max-width:560px; margin:0 auto; min-height:100vh; background:var(--bg); position:relative;}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  padding:14px 16px 10px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid transparent;
+}
+.topbar.scrolled{border-bottom-color:var(--line);}
+.brand{display:flex; align-items:center; gap:9px;}
+.brand-mark{width:28px; height:28px; border-radius:7px; background:var(--teal); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.brand-mark svg{width:16px; height:16px;}
+.brand-name{font-family:var(--font-display); font-weight:700; font-size:16.5px; color:var(--teal-ink);}
+.role-chip{
+  display:flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--line);
+  padding:6px 10px 6px 8px; border-radius:99px; font-size:12.5px; font-weight:600; color:var(--ink-soft);
+  cursor:pointer;
+}
+.role-dot{width:7px; height:7px; border-radius:50%; background:var(--teal);}
+.role-chip svg{width:13px; height:13px;}
+
+/* ---------- Content ---------- */
+.screen{padding:4px 16px 28px;}
+.page-head{margin:6px 0 16px;}
+.page-title{font-size:23px; font-weight:700; margin:0 0 2px; color:var(--teal-ink);}
+.page-sub{font-size:13.5px; color:var(--ink-soft); margin:0;}
+
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg);
+  padding:16px; margin-bottom:12px; box-shadow:var(--shadow);
+}
+.card-flat{background:var(--surface-2); border:1px solid var(--line-soft); border-radius:var(--radius); padding:12px 14px; margin-bottom:10px;}
+.card-title{font-family:var(--font-display); font-weight:600; font-size:15px; margin:0 0 10px; display:flex; align-items:center; justify-content:space-between; gap:8px;}
+
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.stat-box{background:var(--surface-2); border:1px solid var(--line-soft); border-radius:var(--radius); padding:12px;}
+.stat-num{font-family:var(--font-mono); font-size:24px; font-weight:600; color:var(--teal-ink); line-height:1;}
+.stat-label{font-size:11.5px; color:var(--ink-soft); margin-top:5px; text-transform:uppercase; letter-spacing:.04em;}
+
+/* ---------- Badges / pills ---------- */
+.badge{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:4px 9px; border-radius:99px; white-space:nowrap;}
+.b-red{background:var(--red-soft); color:var(--red-ink);}
+.b-amber{background:var(--amber-soft); color:var(--amber-ink);}
+.b-green{background:var(--green-soft); color:var(--green-ink);}
+.b-teal{background:var(--teal-soft); color:var(--teal-ink);}
+.b-copper{background:var(--copper-soft); color:#7A4E1E;}
+.b-neutral{background:var(--line-soft); color:var(--ink-soft);}
+.dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+.dot-red{background:var(--red);} .dot-amber{background:var(--amber);} .dot-green{background:var(--green);}
+
+.group-tag{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:3px 8px 3px 6px; border-radius:99px;}
+.gswatch{width:9px; height:9px; border-radius:50%; flex-shrink:0; border:1px solid rgba(0,0,0,.12);}
+
+/* ---------- Buttons ---------- */
+.btn{
+  border:none; border-radius:var(--radius); padding:11px 16px; font-weight:600; font-size:14px;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  transition:transform .05s ease, opacity .15s ease;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--teal); color:#fff;}
+.btn-copper{background:var(--copper); color:#fff;}
+.btn-outline{background:var(--surface); color:var(--teal-ink); border:1px solid var(--line);}
+.btn-ghost{background:transparent; color:var(--teal-ink); padding:8px 10px;}
+.btn-danger{background:var(--red-soft); color:var(--red-ink);}
+.btn-block{width:100%;}
+.btn-sm{padding:7px 11px; font-size:12.5px; border-radius:var(--radius-sm);}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+.btn-row{display:flex; gap:8px;}
+
+/* ---------- Forms ---------- */
+label.field-label{display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin:0 0 5px; text-transform:uppercase; letter-spacing:.03em;}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  width:100%; border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 11px;
+  font-size:14.5px; font-family:var(--font-body); background:var(--surface); color:var(--ink);
+}
+textarea{resize:vertical; min-height:56px;}
+.field{margin-bottom:12px;}
+.seg{display:flex; border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden;}
+.seg button{flex:1; border:none; background:var(--surface); padding:9px 6px; font-size:12.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; border-right:1px solid var(--line);}
+.seg button:last-child{border-right:none;}
+.seg button.active{background:var(--teal); color:#fff;}
+
+.stepper{display:flex; align-items:center; gap:0; border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden; width:fit-content;}
+.stepper button{width:36px; height:36px; border:none; background:var(--surface-2); font-size:18px; font-weight:600; color:var(--teal-ink); cursor:pointer;}
+.stepper button:active{background:var(--teal-soft);}
+.stepper .val{width:44px; text-align:center; font-family:var(--font-mono); font-weight:600; font-size:15px;}
+.stepper .val-input{width:44px; text-align:center; font-family:var(--font-mono); font-weight:600; font-size:15px; border:none; background:transparent; padding:8px 2px; color:var(--ink); -moz-appearance:textfield;}
+.stepper .val-input::-webkit-outer-spin-button, .stepper .val-input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+.stepper .val-input:focus{outline:none; background:var(--teal-soft);}
+
+/* ---------- Lists ---------- */
+.row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 0; border-bottom:1px solid var(--line-soft);}
+.row:last-child{border-bottom:none;}
+.row-main{flex:1; min-width:0;}
+.row-title{font-weight:600; font-size:14.5px; display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
+.row-title svg{width:14px; height:14px;}
+.row-meta{font-size:12px; color:var(--ink-soft); margin-top:3px;}
+
+/* ---------- Subtabs ---------- */
+.subtabs{display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; padding-bottom:2px;}
+.subtab{padding:8px 13px; border-radius:99px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--line); color:var(--ink-soft); cursor:pointer; white-space:nowrap; flex-shrink:0;}
+.subtab.active{background:var(--teal-ink); color:#fff; border-color:var(--teal-ink);}
+
+/* ---------- Bottom nav ---------- */
+.bottomnav{
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px;
+  background:var(--surface); border-top:1px solid var(--line); display:flex; z-index:30;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.navbtn{flex:1; border:none; background:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 2px 8px; cursor:pointer; color:var(--ink-faint);}
+.navbtn svg{width:21px; height:21px;}
+.navbtn.active{color:var(--teal-ink);}
+.navbtn .lbl{font-size:10.5px; font-weight:600;}
+
+/* ---------- Wash step ---------- */
+.wash-step{
+  display:flex; align-items:center; gap:10px; background:var(--teal-ink); color:#fff;
+  border-radius:var(--radius); padding:12px 14px; margin:8px 0;
+}
+.wash-step svg{width:19px; height:19px; flex-shrink:0;}
+.wash-step .wtext{flex:1; font-weight:600; font-size:13.5px;}
+.wash-step.done{background:var(--green-soft); color:var(--green-ink);}
+
+.churn-item{
+  display:flex; align-items:center; gap:11px; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius); padding:12px 13px; margin:8px 0; border-left:4px solid var(--line);
+}
+.churn-item.locked{opacity:.45;}
+.churn-item.done{background:var(--green-soft); border-color:var(--green-soft);}
+.check-circle{width:26px; height:26px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.check-circle.checked{background:var(--green); border-color:var(--green);}
+.check-circle svg{width:14px; height:14px; color:#fff;}
+
+/* ---------- Modal ---------- */
+.modal-backdrop{position:fixed; inset:0; background:rgba(15,25,22,.45); z-index:50; display:flex; align-items:flex-end; justify-content:center;}
+.modal-sheet{
+  background:var(--surface); width:100%; max-width:560px; border-radius:18px 18px 0 0;
+  padding:18px 18px calc(20px + env(safe-area-inset-bottom)); max-height:88vh; overflow-y:auto;
+}
+.modal-handle{width:36px; height:4px; background:var(--line); border-radius:99px; margin:0 auto 14px;}
+.modal-title{font-family:var(--font-display); font-weight:700; font-size:18px; margin:0 0 14px;}
+
+/* ---------- Empty state ---------- */
+.empty{text-align:center; padding:36px 18px; color:var(--ink-soft);}
+.empty svg{width:34px; height:34px; margin-bottom:10px; opacity:.5;}
+.empty p{margin:0; font-size:13.5px;}
+
+/* ---------- Role select ---------- */
+.role-screen{min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px; text-align:center;}
+.role-card{width:100%; max-width:360px;}
+.role-opt{
+  display:flex; align-items:center; gap:13px; width:100%; text-align:left; background:var(--surface);
+  border:1px solid var(--line); border-radius:var(--radius-lg); padding:16px; margin-bottom:11px; cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.role-opt:active{transform:scale(0.98);}
+.role-icon{width:42px; height:42px; border-radius:11px; background:var(--teal-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.role-icon svg{width:21px; height:21px; color:var(--teal-ink);}
+.role-opt-title{font-weight:700; font-size:15px;}
+.role-opt-sub{font-size:12px; color:var(--ink-soft); margin-top:1px;}
+
+.bar-track{height:8px; background:var(--line-soft); border-radius:99px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:99px;}
+
+.toast{
+  position:fixed; bottom:92px; left:50%; transform:translateX(-50%); background:var(--teal-ink); color:#fff;
+  padding:10px 16px; border-radius:99px; font-size:13px; font-weight:600; z-index:60; box-shadow:var(--shadow);
+  animation:toastin .2s ease;
+}
+@keyframes toastin{from{opacity:0; transform:translate(-50%,8px);} to{opacity:1; transform:translate(-50%,0);}}
+
+.hint{font-size:12px; color:var(--ink-faint); line-height:1.5;}
+.divider{height:1px; background:var(--line-soft); margin:14px 0;}
+.link-btn{background:none; border:none; color:var(--teal-ink); font-weight:600; font-size:13px; cursor:pointer; padding:0;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* =========================================================
+   GELATO PRODUCTION PLANNER — single-file app
+   Data persists via window.storage (shared across all users
+   of this artifact link — see README for details).
+   ========================================================= */
+
+/* ---------------- Icons (inline SVG, stroke-based) ---------------- */
+const ICONS = {
+  today: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>`,
+  plan: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>`,
+  churn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>`,
+  stock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg>`,
+  flavours: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10c0-3 3.5-7 8-7s8 4 8 7-3 4-3 7a5 5 0 0 1-10 0c0-3-3-4-3-7z"/></svg>`,
+  reports: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>`,
+  wash: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 1.5M9 3h6M8 3v2M16 3v2"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`,
+  alert: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L2.5 17a1.8 1.8 0 0 0 1.6 2.7h15.8a1.8 1.8 0 0 0 1.6-2.7L13.7 3.9a1.8 1.8 0 0 0-3.4 0z"/></svg>`,
+  scoop: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9.5 14.5L6 21M14.5 14.5L18 21"/></svg>`,
+  truck: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="14" height="10"/><path d="M15 10h4l3 3v4h-7z"/><circle cx="6" cy="19" r="2"/><circle cx="17.5" cy="19" r="2"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+  chev: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+  x: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+  plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>`,
+  archive: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg>`,
+  star: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.6 7.1.7-5.4 4.7 1.6 7-6.2-3.7L6 21l1.6-7L2.2 9.3l7.1-.7z"/></svg>`,
+  bake: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="10" rx="1.5"/><path d="M7 10c0-2 1-3 1-5s-1-2-1-3M12 10c0-2 1-3 1-5s-1-2-1-3M17 10c0-2 1-3 1-5s-1-2-1-3"/></svg>`,
+};
+function icon(name,cls){ return `<span class="${cls||''}" style="display:inline-flex">${ICONS[name]||''}</span>`; }
+
+/* ---------------- Constants ---------------- */
+const DEFAULT_GROUPS = [
+  {id:'A', name:'Group A', color:'#7FB0A3'},
+  {id:'B', name:'Group B', color:'#8FA871'},
+  {id:'C', name:'Group C', color:'#C9BFA0'},
+  {id:'D', name:'Group D', color:'#8A6142'},
+  {id:'E', name:'Group E', color:'#A9C6C0'},
+  {id:'F', name:'Group F', color:'#8B5E7A'},
+  {id:'G', name:'Group G', color:'#C25B6B'},
+  {id:'H', name:'Group H', color:'#D9A63E'},
+  {id:'I', name:'Group I', color:'#5B4636'},
+  {id:'J', name:'Group J', color:'#C7A567'},
+  {id:'K', name:'Group K', color:'#D6A9C9'},
+  {id:'L', name:'Group L', color:'#A0B5D9'},
+  {id:'M', name:'Group M', color:'#A8BFA0'},
+  {id:'N', name:'Group N', color:'#D9C36A'},
+  {id:'O', name:'Group O', color:'#C97D5A'},
+  {id:'P', name:'Group P', color:'#7C9CA6'},
+];
+const GROUP_COLOR_PALETTE = ['#C9BFA0','#8A6142','#7E9A63','#C79A56','#7FB0A3','#A9C6C0','#CE7C61','#B58AC0','#8FB0D6','#D6A9C9','#A0B5D9','#D9C36A'];
+function getGroups(){ return (DB && DB['wash-config'] && DB['wash-config'].groups) || DEFAULT_GROUPS; }
+function groupOrderIds(){ return getGroups().map(g=>g.id); }
+function groupInfo(id){ return getGroups().find(g=>g.id===id) || getGroups()[0] || {id:'?',name:'Unknown',color:'#ccc'}; }
+
+const SHIFT_DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DEFAULT_SHIFTS = {
+  Tuesday:  {start:'10:00', end:'18:00'},
+  Wednesday:{start:'13:00', end:'19:00'},
+  Friday:   {start:'11:00', end:'19:00'},
+  Saturday: {start:'12:00', end:'20:00'},
+};
+const DELIVERY_DAYS = ['Tuesday','Friday'];
+
+const DEFAULT_SHIFT_SETTINGS = {
+  shifts: DEFAULT_SHIFTS,
+  setupMin: 40,
+  cleanMin: 40,
+  washMin: 20,
+  defaultProdMinPerBladder: 15,
+  bladdersPerHourPace: 3.5,
+};
+
+/* Special conditional wash rule: wash before Group D is only required
+   if Coffee (group C) was actually churned in today's run. Defensively
+   ignored if either group no longer exists (e.g. groups were restructured). */
+const SPECIAL_WASH_RULE = { fromGroup:'C', toGroup:'D', flavourId:'coffee', label:'Coffee → Group D' };
+
+function uid(prefix){ return prefix+'_'+Math.random().toString(36).slice(2,9); }
+
+/* ---------------- Seed data ---------------- */
+function seedFlavours(){
+  const f = (o)=>Object.assign({
+    id:uid('fl'), active:true, isSpecial:false, popular:false,
+    par:2, yieldPotsPerBladder:2.5, prodTimeMinPerBladder:15,
+    allergenNotes:'', washAlwaysAfter:false, notes:'', photoRef:'', groupUnconfirmed:false,
+    components:[],
+  }, o);
+  const comp = (name, needsBaking)=>({id:uid('cmp'), name, needsBaking:!!needsBaking});
+  let list = [
+    // Group A — churned alone; the machine is washed after it by default (group of one)
+    f({name:'Choc mint', group:'A', groupOrder:1, par:2, yieldPotsPerBladder:1.5}),
+    // Group B — churned alone; washed after by default
+    f({name:'Pistachio', group:'B', groupOrder:1, par:2, yieldPotsPerBladder:2.5, allergenNotes:'Contains tree nuts (pistachio).'}),
+    // Group C — ends with Coffee; wash into Group D only required if Coffee was churned
+    f({name:'Pistachio praline', group:'C', groupOrder:1, popular:true, par:3, yieldPotsPerBladder:2.5, allergenNotes:'Contains tree nuts (pistachio).',
+      components:[comp('Pistachio base bladder'), comp('Pistachio paste')]}),
+    f({name:'Vanilla', group:'C', groupOrder:2, popular:true, par:3, yieldPotsPerBladder:3.5, allergenNotes:'Dairy.'}),
+    f({name:'Hokey pokey', group:'C', groupOrder:3, par:2, yieldPotsPerBladder:3, allergenNotes:'Dairy.'}),
+    f({name:'Salted caramel', group:'C', groupOrder:4, par:2, yieldPotsPerBladder:3}),
+    f({name:'Super dulce de leche', group:'C', groupOrder:5, par:2, yieldPotsPerBladder:2.5}),
+    f({name:'Cookies and cream', group:'C', groupOrder:6, par:2, yieldPotsPerBladder:2, allergenNotes:'Contains gluten (biscuit).',
+      components:[comp('Vanilla base bladder'), comp('Crushed biscuit mix-in')]}),
+    f({name:'Choc chip', group:'C', groupOrder:7, par:2, yieldPotsPerBladder:3, allergenNotes:'Contains gluten (biscuit) — confirm recipe.'}),
+    f({name:'Tiramisu', group:'C', groupOrder:8, popular:true, par:3, yieldPotsPerBladder:2.5, allergenNotes:'Contains egg, alcohol (marsala).'}),
+    f({name:'Coffee', group:'C', groupOrder:9, par:2, yieldPotsPerBladder:3, id:'coffee', notes:'Last in Group C. If churned, the machine must be washed before starting Group D. If not churned, Group D can continue without a wash.'}),
+    // Group D
+    f({name:'Macadamia', group:'D', groupOrder:1, par:2, yieldPotsPerBladder:2.5, allergenNotes:'Contains tree nuts (macadamia).', notes:'First flavour of Group D — wash only required beforehand if Coffee was churned.',
+      components:[comp('Nut base bladder'), comp('Macadamia paste'), comp('Macadamia crunch', true)]}),
+    f({name:'White choc hazelnut', group:'D', groupOrder:2, par:2, yieldPotsPerBladder:2.5, allergenNotes:'Contains tree nuts (hazelnut).'}),
+    f({name:'Hazelnut', group:'D', groupOrder:3, par:2, yieldPotsPerBladder:2.5, allergenNotes:'Contains tree nuts (hazelnut).'}),
+    f({name:'Milk choc peanut fudge', group:'D', groupOrder:4, popular:true, par:3, yieldPotsPerBladder:2.5, allergenNotes:'Contains peanuts.'}),
+    f({name:'Messinatella', group:'D', groupOrder:5, par:2, yieldPotsPerBladder:2.2, prodTimeMinPerBladder:20}),
+    f({name:'Fondant', group:'D', groupOrder:6, popular:true, par:3, yieldPotsPerBladder:1.5}),
+    // Group E
+    f({name:'Salted coconut and mango', group:'E', groupOrder:1, par:2, yieldPotsPerBladder:2.8, allergenNotes:'Contains coconut.'}),
+    f({name:'Pandan and coconut', group:'E', groupOrder:2, par:2, yieldPotsPerBladder:3, allergenNotes:'Contains coconut.'}),
+    f({name:'Coconut lychee', group:'E', groupOrder:3, par:2, yieldPotsPerBladder:3, allergenNotes:'Contains coconut.'}),
+    f({name:'Bounty', group:'E', groupOrder:4, par:2, yieldPotsPerBladder:2.8, allergenNotes:'Contains coconut.'}),
+    // Group F — churned alone; washed after by default
+    f({name:'Rum and raisin', group:'F', groupOrder:1, par:2, yieldPotsPerBladder:2.5, allergenNotes:'Contains alcohol.'}),
+    // Group G
+    f({name:'Blood orange', group:'G', groupOrder:1, par:2, yieldPotsPerBladder:4, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    f({name:'Strawberry', group:'G', groupOrder:2, par:2, yieldPotsPerBladder:4, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    f({name:'Strawberry and cream', group:'G', groupOrder:3, par:2, yieldPotsPerBladder:3, allergenNotes:'Dairy.'}),
+    f({name:'Boysenberry', group:'G', groupOrder:4, par:2, yieldPotsPerBladder:4, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    // Group H
+    f({name:'Lemon', group:'H', groupOrder:1, par:2, yieldPotsPerBladder:4, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    f({name:'Mango', group:'H', groupOrder:2, par:2, yieldPotsPerBladder:3.5, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    f({name:'Passionfruit', group:'H', groupOrder:3, par:2, yieldPotsPerBladder:4, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    // Group I — churned alone; washed after by default
+    f({name:'Choc sorbet', group:'I', groupOrder:1, par:2, yieldPotsPerBladder:3.5, prodTimeMinPerBladder:10, notes:'Dairy-free sorbet.'}),
+    // Group J — churned alone; washed after by default
+    f({name:'Cone-ception', group:'J', groupOrder:1, par:2, yieldPotsPerBladder:2.2, prodTimeMinPerBladder:20, allergenNotes:'Contains gluten (cone pieces) — confirm recipe.', notes:'Guessed timing from the name — check this one first.'}),
+
+    // Groups K–P are reserved for monthly specials. This month's 10 are
+    // split across them as a starting point — group/yield/PAR are
+    // unconfirmed placeholders (groupUnconfirmed) until reviewed.
+    f({name:'Bertha loves mertha', group:'K', groupOrder:1, isSpecial:true, groupUnconfirmed:true, notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Little bloke', group:'K', groupOrder:2, isSpecial:true, groupUnconfirmed:true, notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Blueberry cheesecake', group:'L', groupOrder:1, isSpecial:true, groupUnconfirmed:true, allergenNotes:'Contains gluten (biscuit base) — confirm recipe.', notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Takking the mikki', group:'L', groupOrder:2, isSpecial:true, groupUnconfirmed:true, notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Breakfast in canberra', group:'M', groupOrder:1, isSpecial:true, groupUnconfirmed:true, notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'The hat trick', group:'M', groupOrder:2, isSpecial:true, groupUnconfirmed:true, notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Crunch time', group:'N', groupOrder:1, isSpecial:true, groupUnconfirmed:true, allergenNotes:'Likely contains gluten — confirm recipe.', notes:'This month\u2019s special — confirm group, allergens and yield.',
+      components:[comp('Base bladder'), comp('Crunch topping', true)]}),
+    f({name:'You make me unicorny', group:'N', groupOrder:2, isSpecial:true, groupUnconfirmed:true, notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Finger bun', group:'O', groupOrder:1, isSpecial:true, groupUnconfirmed:true, allergenNotes:'Likely contains gluten — confirm recipe.', notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+    f({name:'Kinder swindler', group:'P', groupOrder:1, isSpecial:true, groupUnconfirmed:true, allergenNotes:'Likely contains tree nuts/hazelnut — confirm recipe.', notes:'This month\u2019s special — confirm group, allergens and yield.'}),
+  ];
+  return list;
+}
+
+function seedStock(flavours){
+  const stock = {};
+  flavours.forEach((f,i)=>{
+    // realistic-ish starting stock scattered across the priority spectrum
+    const patterns = [3,2,1,0,4,2,1,3,0,2];
+    const pots = patterns[i % patterns.length];
+    stock[f.id] = {
+      neg20: Math.ceil(pots*0.6), neg14: Math.floor(pots*0.4),
+      bladders: (i%5===0)?0:(2+(i%4)),
+      updatedAt: new Date().toISOString(),
+    };
+  });
+  return stock;
+}
+
+/* ---------------- Storage layer ---------------- */
+const StorageKeys = ['flavours','specials','stock','expiry-alerts','wash-config','shift-settings','production-plans','stock-history'];
+var DB = null; // in-memory mirror of persisted state once loaded (kept as a global for debuggability)
+
+async function loadAll(){
+  const db = {};
+  for(const key of StorageKeys){
+    try{
+      const res = await window.storage.get(key, true);
+      db[key] = res ? JSON.parse(res.value) : null;
+    }catch(e){ db[key] = null; }
+  }
+  let needsSeed = false;
+  if(!db['flavours']){
+    db['flavours'] = seedFlavours();
+    needsSeed = true;
+  }
+  if(!db['stock']) db['stock'] = seedStock(db['flavours']);
+  if(!db['specials']) db['specials'] = { current: db['flavours'].filter(f=>f.isSpecial).map(f=>f.id), archive: [] };
+  if(!db['expiry-alerts']) db['expiry-alerts'] = [];
+  if(!db['wash-config']) db['wash-config'] = { specialRule: SPECIAL_WASH_RULE, groups: JSON.parse(JSON.stringify(DEFAULT_GROUPS)) };
+  if(!db['wash-config'].groups) db['wash-config'].groups = JSON.parse(JSON.stringify(DEFAULT_GROUPS)); // migrate older saved data
+  if(!db['shift-settings']) db['shift-settings'] = DEFAULT_SHIFT_SETTINGS;
+  if(!db['production-plans']) db['production-plans'] = {};
+  if(!db['stock-history']) db['stock-history'] = [];
+  DB = db;
+  if(needsSeed) await saveAll();
+  return db;
+}
+async function save(key){
+  try{ await window.storage.set(key, JSON.stringify(DB[key]), true); }
+  catch(e){ console.error('Storage save failed for', key, e); toast('Could not save — check connection'); }
+}
+async function saveAll(){ for(const k of StorageKeys) await save(k); }
+
+/* ---------------- App state ---------------- */
+const State = {
+  role: null,          // 'manager' | 'churner' | 'staff'
+  tab: 'today',
+  stockSub: 'count',    // count | delivery | alerts
+  flavourSub: 'list',   // list | specials
+  countPhase: 'neg20',  // neg20 | neg14
+  countDraft: {},
+  deliveryDraft: {},
+  planDate: null,       // ISO date currently shown in Plan tab
+  bakeDate: null,       // ISO date currently shown in Bake tab
+  workflowGroup: null,
+  workflowChecks: {},   // per-session churner ticks before commit
+  modal: null,          // {type,...}
+  loaded: false,
+};
+window.State = State; // exposed as a global for debuggability
+
+function todayISO(d){ d = d||new Date(); return d.toISOString().slice(0,10); }
+function fmtDate(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('en-AU',{weekday:'short', day:'numeric', month:'short'});
+}
+function alpha(list){ return [...list].sort((a,b)=>a.name.localeCompare(b.name, undefined, {sensitivity:'base'})); }
+function snapQuarter(n){ return Math.max(0, Math.round(n*4)/4); }
+function fmtNum(n){ return (Math.round(n*100)/100).toString(); }
+function fmtPots(n){ const v = snapQuarter(n); return fmtNum(v) + ' pot' + (v===1?'':'s'); }
+function nextChurnDates(count){
+  const out = []; let d = new Date();
+  let guard=0;
+  while(out.length<count && guard<30){
+    const wd = SHIFT_DAYS[d.getDay()];
+    if(DB['shift-settings'].shifts[wd]) out.push(todayISO(d));
+    d.setDate(d.getDate()+1); guard++;
+  }
+  return out;
+}
+function shiftMinutesFor(dateISO){
+  const wd = SHIFT_DAYS[new Date(dateISO+'T00:00:00').getDay()];
+  const sh = DB['shift-settings'].shifts[wd];
+  if(!sh) return 0;
+  const [sh1,sm1] = sh.start.split(':').map(Number);
+  const [sh2,sm2] = sh.end.split(':').map(Number);
+  return (sh2*60+sm2)-(sh1*60+sm1);
+}
+
+function toast(msg){
+  let t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2200);
+}
+
+function stockTotal(flavourId){
+  const s = DB.stock[flavourId] || {neg20:0,neg14:0,bladders:0};
+  return (s.neg20||0)+(s.neg14||0);
+}
+function activeAlertsFor(flavourId){
+  return DB['expiry-alerts'].filter(a=>a.flavourId===flavourId && !a.resolved);
+}
+function stockStatusColor(flavour){
+  const total = stockTotal(flavour.id);
+  const urgent = activeAlertsFor(flavour.id).some(a=>a.urgency==='today');
+  if(urgent || total<=0) return 'red';
+  if(total<=1 || total<flavour.par) return 'amber';
+  return 'green';
+}
+
+/* ---------------- Recommendation engine ---------------- */
+function buildCandidates(){
+  const candidates = [];
+  DB.flavours.filter(f=>f.active).forEach(f=>{
+    const total = stockTotal(f.id);
+    const bladders = (DB.stock[f.id]||{}).bladders || 0;
+    const alerts = activeAlertsFor(f.id);
+    const useToday = alerts.find(a=>a.urgency==='today');
+    let tier=null, reason='', targetPots=null, forcedBladders=null;
+    if(useToday){
+      tier=1; reason=`Urgent: manually flagged to use today (${useToday.bladderCount} bladder${useToday.bladderCount==1?'':'s'})`;
+      forcedBladders = useToday.bladderCount;
+    } else if(total<=0){
+      tier=2; reason='Critical: 0 pots in stock'; targetPots = Math.max(f.par,1);
+    } else if(total<=1){
+      tier=3; reason=`Low stock: ${fmtPots(total)} remaining`; targetPots = f.par;
+    } else if(f.popular && total<2){
+      tier=4; reason=`Popular flavour: ${fmtNum(total)} of 2 target pots available`; targetPots = Math.max(2,f.par);
+    } else if(total<f.par){
+      tier=5; reason=`Below PAR: ${fmtNum(total)} pots, target is ${fmtNum(f.par)}`; targetPots = f.par;
+    }
+    if(tier===null) return;
+    let bladdersNeeded;
+    if(forcedBladders!=null){ bladdersNeeded = Math.min(forcedBladders, bladders); }
+    else {
+      const potsNeeded = Math.max(0, targetPots - total);
+      bladdersNeeded = Math.ceil(potsNeeded / f.yieldPotsPerBladder);
+      bladdersNeeded = Math.min(bladdersNeeded, bladders);
+    }
+    const blocked = bladdersNeeded<=0 && bladders<=0;
+    const severity = tier===5 ? (f.par-total) : (tier===1?99:0);
+    candidates.push({
+      flavourId:f.id, tier, reason, severity, bladdersNeeded,
+      bladdersAvailable:bladders, blocked, currentPots:total, watchAlert: alerts.find(a=>a.urgency==='next'),
+    });
+  });
+  candidates.sort((a,b)=> a.tier-b.tier || b.severity-a.severity);
+  return candidates;
+}
+
+function estimateWashMinutes(selection){
+  // selection: array of {flavourId, bladdersNeeded} in group/order sequence
+  if(selection.length===0) return 0;
+  const byFlavour = id=>DB.flavours.find(f=>f.id===id);
+  let washes = 0;
+  let lastGroup = null;
+  const groupsTouched = [];
+  selection.forEach((s,idx)=>{
+    const f = byFlavour(s.flavourId);
+    if(lastGroup && lastGroup!==f.group){
+      const rule = DB['wash-config'].specialRule;
+      if(rule && lastGroup===rule.fromGroup && f.group===rule.toGroup){
+        const coffeeInSelection = selection.some(x=>x.flavourId===rule.flavourId);
+        if(coffeeInSelection) washes++;
+      } else {
+        washes++;
+      }
+    }
+    if(f.washAlwaysAfter) washes++;
+    lastGroup = f.group;
+  });
+  return washes * DB['shift-settings'].washMin;
+}
+
+function allocateForDate(dateISO, candidates, excludeIds){
+  const settings = DB['shift-settings'];
+  const shiftMin = shiftMinutesFor(dateISO);
+  const available = Math.max(0, shiftMin - settings.setupMin - settings.cleanMin);
+  const byFlavour = id=>DB.flavours.find(f=>f.id===id);
+  const chosen = []; const leftover = [];
+  let prodMinutes = 0;
+  candidates.forEach(c=>{
+    if(excludeIds.has(c.flavourId)) return;
+    if(c.blocked || c.bladdersNeeded<=0){ leftover.push(c); return; }
+    const f = byFlavour(c.flavourId);
+    const thisTime = c.bladdersNeeded * (f.prodTimeMinPerBladder||settings.defaultProdMinPerBladder);
+    const trialWash = estimateWashMinutes([...chosen, c]);
+    const projected = prodMinutes + thisTime + trialWash;
+    if(projected <= available || chosen.length===0){
+      chosen.push(c); prodMinutes += thisTime; excludeIds.add(c.flavourId);
+    } else {
+      leftover.push(c);
+    }
+  });
+  const washMinutes = estimateWashMinutes(chosen);
+  const planned = prodMinutes + washMinutes;
+  return {
+    date: dateISO, chosen, leftover,
+    summary:{ shiftMin, setupMin:settings.setupMin, cleanMin:settings.cleanMin, available,
+      prodMinutes, washMinutes, planned, spare: available-planned, overbooked: planned>available },
+  };
+}
+
+async function generatePlans(){
+  const [d0,d1] = nextChurnDates(2);
+  const candidates = buildCandidates();
+  const excludeIds = new Set();
+  const plan0 = allocateForDate(d0, candidates, excludeIds);
+  const plan1 = allocateForDate(d1, plan0.leftover, excludeIds);
+  const existing0 = DB['production-plans'][d0];
+  const existing1 = DB['production-plans'][d1];
+  const mk = (alloc, existing)=>({
+    date: alloc.date,
+    recommended: alloc.chosen.map(c=>({flavourId:c.flavourId, bladders:c.bladdersNeeded, reason:c.reason, tier:c.tier})),
+    approved: alloc.chosen.map(c=>({flavourId:c.flavourId, bladders:c.bladdersNeeded, note:''})),
+    // Regenerating a plan (e.g. right after a delivery) must not wipe ticks
+    // someone already made, so any progress on a still-open plan carries over.
+    completed: (existing && existing.completed) || {},
+    bakingCompleted: (existing && existing.bakingCompleted) || {},
+    blocked: alloc.leftover.filter(c=>c.blocked).map(c=>({flavourId:c.flavourId, reason:c.reason, tier:c.tier})),
+    summary: alloc.summary,
+    generatedAt: new Date().toISOString(),
+  });
+  DB['production-plans'][d0] = mk(plan0, existing0);
+  DB['production-plans'][d1] = mk(plan1, existing1);
+  await save('production-plans');
+  State.planDate = d0;
+  return [d0,d1];
+}
+
+function getOrInitPlan(dateISO){
+  return DB['production-plans'][dateISO] || null;
+}
+
+/* Baked components needed for a plan's approved flavours — staff prep these
+   before the churner starts. Derived fresh from the plan each time, not stored. */
+function getBakingItems(plan){
+  if(!plan) return [];
+  const items = [];
+  plan.approved.forEach(a=>{
+    const f = DB.flavours.find(x=>x.id===a.flavourId);
+    if(!f || !f.components) return;
+    f.components.filter(c=>c.needsBaking).forEach(c=>{
+      items.push({flavourId:f.id, flavourName:f.name, group:f.group, componentId:c.id, name:c.name, key:`${f.id}_${c.id}`});
+    });
+  });
+  return items;
+}
+function bakingKey(flavourId, componentId){ return `${flavourId}_${componentId}`; }
+
+/* Build ordered churner sequence (with wash markers) from an approved list */
+function buildSequence(approvedList){
+  const byFlavour = id=>DB.flavours.find(f=>f.id===id);
+  const items = approvedList.map(a=>({...a, f:byFlavour(a.flavourId)})).filter(x=>x.f);
+  const byGroup = {};
+  items.forEach(it=>{ (byGroup[it.f.group]=byGroup[it.f.group]||[]).push(it); });
+  Object.values(byGroup).forEach(arr=>arr.sort((a,b)=>a.f.groupOrder-b.f.groupOrder));
+  const groupsPresent = groupOrderIds().filter(g=>byGroup[g] && byGroup[g].length);
+  const seq = [];
+  groupsPresent.forEach((g,gi)=>{
+    byGroup[g].forEach((it,ii)=>{
+      seq.push({type:'flavour', flavourId:it.flavourId, bladders:it.bladders, group:g});
+      if(it.f.washAlwaysAfter){
+        seq.push({type:'wash', reason:`${it.f.name} always requires a wash after`, group:g});
+      }
+    });
+    const nextGroup = groupsPresent[gi+1];
+    if(nextGroup){
+      const rule = DB['wash-config'].specialRule;
+      let needWash = true;
+      if(rule && g===rule.fromGroup && nextGroup===rule.toGroup){
+        needWash = byGroup[g].some(it=>it.flavourId===rule.flavourId);
+      }
+      if(needWash){
+        seq.push({type:'wash', reason:`Moving from Group ${g} to Group ${nextGroup}`, group:g});
+      }
+    }
+  });
+  return seq;
+}
+
+/* ---------------- Rendering shell ---------------- */
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+
+function render(){
+  const app = document.getElementById('app');
+  if(!State.loaded){ app.innerHTML = loadingScreen(); return; }
+  if(!State.role){ app.innerHTML = roleScreen(); return; }
+  app.innerHTML = `
+    ${topbar()}
+    <div class="screen">${routeView()}</div>
+    ${bottomNav()}
+    ${State.modal ? modalWrap() : ''}
+  `;
+  wireGlobalEvents();
+}
+
+function loadingScreen(){
+  return `<div class="role-screen"><div class="brand-mark" style="width:44px;height:44px;border-radius:12px;margin-bottom:14px;">${icon('scoop')}</div>
+  <p style="color:var(--ink-soft);font-size:13.5px;">Loading production data…</p></div>`;
+}
+
+function roleScreen(){
+  return `<div class="role-screen">
+    <div class="brand-mark" style="width:50px;height:50px;border-radius:13px;margin-bottom:16px;">${icon('scoop')}</div>
+    <h1 class="disp" style="font-size:22px;margin:0 0 4px;">Churn Sheet</h1>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin:0 0 26px;">Who's using the app right now?</p>
+    <div class="role-card">
+      <div class="role-opt" onclick="setRole('manager')">
+        <div class="role-icon">${icon('reports')}</div>
+        <div><div class="role-opt-title">Manager</div><div class="role-opt-sub">Approve plans, edit flavours, view reports</div></div>
+      </div>
+      <div class="role-opt" onclick="setRole('churner')">
+        <div class="role-icon">${icon('churn')}</div>
+        <div><div class="role-opt-title">Churner</div><div class="role-opt-sub">Run today's production, log stock &amp; deliveries</div></div>
+      </div>
+      <div class="role-opt" onclick="setRole('staff')">
+        <div class="role-icon">${icon('stock')}</div>
+        <div><div class="role-opt-title">Staff</div><div class="role-opt-sub">Quick look at today's stock &amp; plan</div></div>
+      </div>
+    </div>
+    <p class="hint" style="max-width:320px;margin-top:8px;">This just sets what you see — it isn't a login. Data is shared with everyone using this app.</p>
+  </div>`;
+}
+
+function topbar(){
+  const roleLabel = {manager:'Manager', churner:'Churner', staff:'Staff'}[State.role];
+  return `<div class="topbar">
+    <div class="brand"><div class="brand-mark">${icon('scoop')}</div><div class="brand-name">Churn Sheet</div></div>
+    <div class="role-chip" onclick="switchRole()"><span class="role-dot"></span>${roleLabel}${icon('chev')}</div>
+  </div>`;
+}
+
+const NAV = {
+  manager: [['today','Today','today'],['plan','Plan','plan'],['bake','Bake','bake'],['stock','Stock','stock'],['flavours','Flavours','flavours'],['reports','Reports','reports']],
+  churner: [['today','Today','today'],['workflow','Churn','churn'],['bake','Bake','bake'],['stock','Stock','stock']],
+  staff:   [['today','Today','today'],['bake','Bake','bake'],['stock','Stock','stock']],
+};
+function bottomNav(){
+  const items = NAV[State.role];
+  return `<div class="bottomnav">${items.map(([key,label,ic])=>`
+    <button class="navbtn ${State.tab===key?'active':''}" onclick="setTab('${key}')">${icon(ic)}<span class="lbl">${label}</span></button>
+  `).join('')}</div>`;
+}
+
+function routeView(){
+  switch(State.tab){
+    case 'today': return todayView();
+    case 'plan': return planView();
+    case 'workflow': return workflowView();
+    case 'bake': return bakeView();
+    case 'stock': return stockView();
+    case 'flavours': return flavoursView();
+    case 'reports': return reportsView();
+    default: return todayView();
+  }
+}
+
+/* ---------------- TODAY view ---------------- */
+function todayView(){
+  const today = todayISO();
+  const [d0] = nextChurnDates(1);
+  const plan = getOrInitPlan(d0);
+  const urgentAlerts = DB['expiry-alerts'].filter(a=>!a.resolved && a.urgency==='today');
+  const criticals = DB.flavours.filter(f=>f.active && stockTotal(f.id)<=0);
+  const lows = DB.flavours.filter(f=>f.active && stockTotal(f.id)>0 && stockTotal(f.id)<=1);
+  const bakingItems = getBakingItems(plan);
+  const bakingCompleteCount = bakingItems.filter(it=>(plan.bakingCompleted||{})[it.key]).length;
+
+  return `
+  <div class="page-head">
+    <h1 class="page-title">Today</h1>
+    <p class="page-sub">${new Date().toLocaleDateString('en-AU',{weekday:'long', day:'numeric', month:'long'})}</p>
+  </div>
+
+  ${urgentAlerts.length ? `
+  <div class="card" style="border-color:var(--red);background:var(--red-soft);">
+    <div class="card-title" style="color:var(--red-ink);"><span style="display:flex;align-items:center;gap:7px;">${icon('alert')} Use today</span></div>
+    ${urgentAlerts.map(a=>{ const f=DB.flavours.find(x=>x.id===a.flavourId); return `
+      <div class="row"><div class="row-main"><div class="row-title">${f?f.name:'Unknown'}</div>
+      <div class="row-meta">${a.bladderCount} bladder${a.bladderCount==1?'':'s'} flagged to use today</div></div>
+      <span class="badge b-red">Urgent</span></div>`; }).join('')}
+  </div>` : ''}
+
+  ${plan && plan.blocked && plan.blocked.length ? `
+  <div class="card" style="border-color:var(--red);background:var(--red-soft);">
+    <div class="card-title" style="color:var(--red-ink);"><span style="display:flex;align-items:center;gap:7px;">${icon('alert')} Can't be produced</span></div>
+    ${plan.blocked.map(b=>{ const f=DB.flavours.find(x=>x.id===b.flavourId); if(!f) return '';
+      return `<div class="row"><div class="row-main"><div class="row-title">${f.name}</div>
+      <div class="row-meta">${b.reason} — 0 bladders in stock</div></div></div>`; }).join('')}
+  </div>` : ''}
+
+  <div class="grid-2" style="margin-bottom:12px;">
+    <div class="stat-box"><div class="stat-num" style="color:var(--red-ink);">${criticals.length}</div><div class="stat-label">Zero stock</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--amber-ink);">${lows.length}</div><div class="stat-label">Low stock (&le;1 pot)</div></div>
+  </div>
+
+  ${bakingItems.length ? `
+  <div class="card">
+    <div class="card-title"><span style="display:flex;align-items:center;gap:7px;">${icon('bake')} Baking readiness</span>
+      <span class="badge ${bakingCompleteCount===bakingItems.length?'b-green':'b-amber'}">${bakingCompleteCount}/${bakingItems.length}</span>
+    </div>
+    <p class="hint">${bakingCompleteCount===bakingItems.length?'Everything is baked and ready for churning.':'Some baked components still need prepping before the churner starts.'}</p>
+    <button class="link-btn" style="margin-top:4px;" onclick="goTab('bake')">Open baking checklist →</button>
+  </div>` : ''}
+
+  <div class="card">
+    <div class="card-title">Plan for ${fmtDate(d0)}${d0===today?' (today)':''}
+      ${State.role==='manager' ? `<button class="link-btn" onclick="goTab('plan')">Open plan</button>`:''}
+    </div>
+    ${plan ? planSummaryMini(plan) : `<p class="hint">No plan generated yet.</p>${State.role==='manager'?`<button class="btn btn-primary btn-sm" onclick="doGeneratePlans()">${icon('plan')} Generate recommendations</button>`:''}`}
+  </div>
+
+  <div class="card">
+    <div class="card-title">Stock at a glance</div>
+    ${alpha(DB.flavours.filter(f=>f.active)).slice(0,6).map(f=>stockRowMini(f)).join('')}
+    <button class="link-btn" style="margin-top:6px;" onclick="goTab('stock')">See full stock →</button>
+  </div>
+  `;
+}
+
+function planSummaryMini(plan){
+  const s = plan.summary;
+  return `
+  <div class="row-meta" style="margin-bottom:8px;">${plan.approved.length} flavour${plan.approved.length==1?'':'s'} · ${s.prodMinutes+s.washMinutes} min planned · ${s.spare>=0?s.spare+' min spare':Math.abs(s.spare)+' min over'}</div>
+  ${plan.approved.slice(0,4).map(a=>{ const f=DB.flavours.find(x=>x.id===a.flavourId); if(!f) return ''; return `
+    <div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name}</div></div><span class="badge b-teal mono">${a.bladders} bl</span></div>`; }).join('')}
+  ${plan.approved.length>4?`<p class="hint">+${plan.approved.length-4} more…</p>`:''}
+  `;
+}
+
+function groupDot(gid){
+  const g = groupInfo(gid);
+  return `<span class="gswatch" style="background:${g.color}" title="Group ${g.id}: ${g.name}"></span>`;
+}
+
+function stockRowMini(f){
+  const total = stockTotal(f.id);
+  const color = stockStatusColor(f);
+  return `<div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name} ${f.popular?icon('star','ink-faint'):''} ${f.groupUnconfirmed?'<span class="badge b-amber">Confirm group</span>':''}</div>
+    <div class="row-meta">${(DB.stock[f.id]||{}).bladders||0} bladders in cool room</div></div>
+    <span class="badge b-${color}"><span class="dot dot-${color}"></span>${fmtPots(total)}</span></div>`;
+}
+
+/* ---------------- PLAN view (manager approval) ---------------- */
+function planView(){
+  const dates = nextChurnDates(2);
+  if(!State.planDate) State.planDate = dates[0];
+  const plan = getOrInitPlan(State.planDate);
+  return `
+  <div class="page-head"><h1 class="page-title">Production plan</h1><p class="page-sub">Recommended, then approve or edit quantities.</p></div>
+  <div class="subtabs">
+    ${dates.map(d=>`<button class="subtab ${State.planDate===d?'active':''}" onclick="setPlanDate('${d}')">${fmtDate(d)}</button>`).join('')}
+  </div>
+  <div class="btn-row" style="margin-bottom:14px;">
+    <button class="btn btn-outline btn-sm" onclick="doGeneratePlans()">${icon('plan')} Re-generate from current stock</button>
+  </div>
+  ${plan ? renderPlanDetail(plan) : `<div class="empty">${icon('plan')}<p>No plan yet for this date.</p></div>`}
+  `;
+}
+
+function renderPlanDetail(plan){
+  const s = plan.summary;
+  return `
+  <div class="card">
+    <div class="card-title">Capacity</div>
+    <div class="grid-2">
+      <div class="stat-box"><div class="stat-num">${s.available}</div><div class="stat-label">Min available</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:${s.overbooked?'var(--red-ink)':'var(--green-ink)'}">${s.planned}</div><div class="stat-label">Min planned</div></div>
+    </div>
+    <div class="hint" style="margin-top:10px;">${s.prodMinutes} min churning · ${s.washMinutes} min washing · ${s.setupMin} min setup · ${s.cleanMin} min clean-down</div>
+    ${s.overbooked ? `<div class="badge b-red" style="margin-top:8px;">Overbooked by ${Math.abs(s.spare)} min</div>` : `<div class="badge b-green" style="margin-top:8px;">${s.spare} min spare</div>`}
+  </div>
+
+  <div class="card">
+    <div class="card-title">Approved production <span class="badge b-neutral">${plan.approved.length}</span></div>
+    ${plan.approved.length===0?`<div class="empty">${icon('check')}<p>Nothing needs churning for this date.</p></div>`:
+    plan.approved.map(a=>{
+      const f = DB.flavours.find(x=>x.id===a.flavourId);
+      const rec = plan.recommended.find(r=>r.flavourId===a.flavourId);
+      if(!f) return '';
+      return `<div class="card-flat">
+        <div class="row" style="border:none;padding-bottom:6px;">
+          <div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name}</div>
+          <div class="row-meta">${rec?rec.reason:''}</div></div>
+        </div>
+        ${State.role==='manager' ? `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;">
+          <div class="stepper">
+            <button onclick="adjustApproved('${plan.date}','${f.id}',-1)">−</button>
+            <input class="val-input" type="number" inputmode="decimal" min="0" step="1" value="${a.bladders}" onchange="setApprovedValue('${plan.date}','${f.id}',this.value)">
+            <button onclick="adjustApproved('${plan.date}','${f.id}',1)">+</button>
+          </div>
+          <span class="hint">bladders → ~${fmtNum(a.bladders*f.yieldPotsPerBladder)} pots</span>
+        </div>` : `<div class="row-meta mono">${a.bladders} bladders</div>`}
+      </div>`;
+    }).join('')}
+  </div>
+
+  ${plan.blocked && plan.blocked.length ? `
+  <div class="card" style="border-color:var(--red);background:var(--red-soft);">
+    <div class="card-title" style="color:var(--red-ink);"><span style="display:flex;align-items:center;gap:7px;">${icon('alert')} Needs attention — can't be produced</span></div>
+    ${plan.blocked.map(b=>{ const f=DB.flavours.find(x=>x.id===b.flavourId); if(!f) return '';
+      return `<div class="row"><div class="row-main"><div class="row-title">${f.name}</div>
+      <div class="row-meta">${b.reason} — but 0 bladders in stock. Order more before this can be churned.</div></div></div>`; }).join('')}
+  </div>` : ''}
+  `;
+}
+
+/* ---------------- WORKFLOW view (churner) ---------------- */
+function workflowView(){
+  const [d0] = nextChurnDates(1);
+  const plan = getOrInitPlan(d0);
+  if(!plan || plan.approved.length===0){
+    return `<div class="page-head"><h1 class="page-title">Churn</h1><p class="page-sub">${fmtDate(d0)}</p></div>
+    <div class="empty">${icon('churn')}<p>No approved plan yet for this churn day. Ask the manager to approve a plan, or generate one below.</p></div>
+    <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="doGeneratePlans()">${icon('plan')} Generate recommendations</button>`;
+  }
+  const seq = buildSequence(plan.approved);
+  const byGroup = {};
+  seq.forEach(step=>{ (byGroup[step.group]=byGroup[step.group]||[]).push(step); });
+  const groupsPresent = groupOrderIds().filter(g=>byGroup[g]);
+  const completed = plan.completed || {};
+
+  if(!State.workflowGroup || !groupsPresent.includes(State.workflowGroup)){
+    // auto pick first group with incomplete steps
+    State.workflowGroup = groupsPresent.find(g=>!allStepsDone(byGroup[g], completed)) || groupsPresent[0];
+  }
+
+  const doneGroups = groupsPresent.filter(g=>allStepsDone(byGroup[g],completed));
+  const activeSteps = byGroup[State.workflowGroup] || [];
+
+  return `
+  <div class="page-head"><h1 class="page-title">Churn — ${fmtDate(d0)}</h1><p class="page-sub">Pick a group to start, then work top to bottom.</p></div>
+
+  <div class="subtabs">
+    ${groupsPresent.map(g=>{ const gi=groupInfo(g); const done=allStepsDone(byGroup[g],completed);
+      return `<button class="subtab ${State.workflowGroup===g?'active':''}" style="${done?'opacity:.55':''}" onclick="setWorkflowGroup('${g}')">
+      <span class="gswatch" style="background:${gi.color};margin-right:5px;"></span>Group ${g}${done?' ✓':''}</button>`; }).join('')}
+  </div>
+
+  <div class="card">
+    <div class="card-title">Group ${State.workflowGroup} — ${groupInfo(State.workflowGroup).name}</div>
+    ${activeSteps.map((step,i)=>renderWorkflowStep(step,i,activeSteps,completed,plan.date)).join('')}
+  </div>
+
+  ${doneGroups.length===groupsPresent.length ? `
+  <div class="card" style="background:var(--green-soft);border-color:var(--green-soft);text-align:center;">
+    <div style="font-weight:700;color:var(--green-ink);">${icon('check')} All groups complete for this churn day 🎉</div>
+  </div>` : ''}
+  `;
+}
+function allStepsDone(steps, completed){ return steps.every((s,i)=>completed[stepKeyFromParts(s,i)]); }
+function stepKeyFromParts(s,i){ return `${s.group}_${i}_${s.type}_${s.flavourId||'wash'}`; }
+
+function renderWorkflowStep(step, idx, allSteps, completed, dateISO){
+  const key = stepKeyFromParts(step, idx);
+  const done = !!completed[key];
+  // lock if any earlier step in this group isn't done
+  const locked = !done && allSteps.slice(0,idx).some((s,i)=>!completed[stepKeyFromParts(s,i)]);
+  if(step.type==='wash'){
+    return `<div class="wash-step ${done?'done':''}" onclick="${locked?'':`toggleStep('${dateISO}','${key}')`}" style="${locked?'opacity:.4;cursor:not-allowed;':'cursor:pointer;'}">
+      ${icon('wash')}<div class="wtext">WASH MACHINE — ${step.reason}</div>${done?icon('check'):''}
+    </div>`;
+  }
+  const f = DB.flavours.find(x=>x.id===step.flavourId);
+  if(!f) return '';
+  return `<div class="churn-item ${done?'done':''} ${locked?'locked':''}" style="border-left-color:${groupInfo(f.group).color}">
+    <div class="check-circle ${done?'checked':''}" onclick="${locked?'':`toggleStep('${dateISO}','${key}')`}">${done?icon('check'):''}</div>
+    <div class="row-main"><div class="row-title">${f.name}</div><div class="row-meta">${step.bladders} bladder${step.bladders==1?'':'s'} · ~${Math.round(step.bladders*f.yieldPotsPerBladder*10)/10} pots</div></div>
+  </div>`;
+}
+
+/* ---------------- BAKE view (staff prep, before churner starts) ---------------- */
+function bakeView(){
+  const dates = nextChurnDates(2);
+  if(!State.bakeDate || !dates.includes(State.bakeDate)) State.bakeDate = dates[0];
+  const plan = getOrInitPlan(State.bakeDate);
+  const items = getBakingItems(plan);
+  const completed = (plan && plan.bakingCompleted) || {};
+  const doneCount = items.filter(it=>completed[it.key]).length;
+  return `
+  <div class="page-head"><h1 class="page-title">Baking</h1><p class="page-sub">Prep these before the churner starts.</p></div>
+  <div class="subtabs">
+    ${dates.map(d=>`<button class="subtab ${State.bakeDate===d?'active':''}" onclick="setBakeDate('${d}')">${fmtDate(d)}${d===todayISO()?' (today)':''}</button>`).join('')}
+  </div>
+  ${!plan ? `<div class="empty">${icon('bake')}<p>No plan yet for this date — generate recommendations first.</p></div>` :
+  items.length===0 ? `<div class="empty">${icon('check')}<p>Nothing needs baking for this date's plan.</p></div>` : `
+  <div class="card">
+    <div class="card-title">Baking checklist <span class="badge ${doneCount===items.length?'b-green':'b-amber'}">${doneCount}/${items.length}</span></div>
+    ${items.map(it=>{
+      const done = !!completed[it.key];
+      return `<div class="churn-item ${done?'done':''}" style="border-left-color:${groupInfo(it.group).color}">
+        <div class="check-circle ${done?'checked':''}" onclick="toggleBaking('${plan.date}','${it.key}')">${done?icon('check'):''}</div>
+        <div class="row-main"><div class="row-title">${it.name}</div><div class="row-meta">For ${it.flavourName}</div></div>
+      </div>`;
+    }).join('')}
+  </div>
+  ${doneCount===items.length?`<div class="card" style="background:var(--green-soft);border-color:var(--green-soft);text-align:center;">
+    <div style="font-weight:700;color:var(--green-ink);">${icon('check')} All baked and ready for churning</div>
+  </div>`:''}`}
+  `;
+}
+
+/* ---------------- STOCK view ---------------- */
+function stockView(){
+  const isEditor = State.role!=='staff';
+  return `
+  <div class="page-head"><h1 class="page-title">Stock</h1><p class="page-sub">${isEditor?'Deliveries, counts and expiry alerts.':'Read-only view.'}</p></div>
+  ${isEditor?`<div class="subtabs">
+    <button class="subtab ${State.stockSub==='count'?'active':''}" onclick="setStockSub('count')">Stock count</button>
+    <button class="subtab ${State.stockSub==='delivery'?'active':''}" onclick="setStockSub('delivery')">Delivery</button>
+    <button class="subtab ${State.stockSub==='alerts'?'active':''}" onclick="setStockSub('alerts')">Expiry alerts</button>
+  </div>`:''}
+  ${!isEditor ? stockReadOnly() : (State.stockSub==='count'?stockCountFlow():State.stockSub==='delivery'?deliveryFlow():alertsFlow())}
+  `;
+}
+
+function stockReadOnly(){
+  return `<div class="card">${alpha(DB.flavours.filter(f=>f.active)).map(f=>stockRowMini(f)).join('')}</div>`;
+}
+
+function stockCountFlow(){
+  const phase = State.countPhase;
+  const flavours = alpha(DB.flavours.filter(f=>f.active));
+  return `
+  <div class="card">
+    <div class="card-title">${phase==='neg20'?'−20 Freezer':'−14 Freezer'} <span class="badge b-teal">${phase==='neg20'?'Step 1 of 2':'Step 2 of 2'}</span></div>
+    <p class="hint" style="margin-bottom:10px;">Counts are in pots — tap a number to type it directly, or use +/− to adjust by quarter pots (0.25, 0.5, 0.75, 1…).</p>
+    <div class="bar-track" style="margin-bottom:14px;"><div class="bar-fill" style="width:${phase==='neg20'?'50%':'100%'};background:var(--teal);"></div></div>
+    ${flavours.map(f=>{
+      const existing = DB.stock[f.id]||{neg20:0,neg14:0};
+      const draftKey = f.id;
+      const val = State.countDraft[draftKey]?.[phase] ?? existing[phase] ?? 0;
+      return `<div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name}</div></div>
+      <div class="stepper" style="min-width:120px;">
+        <button onclick="adjustCount('${f.id}','${phase}',-0.25)">−</button>
+        <input class="val-input" type="number" inputmode="decimal" min="0" step="0.25" style="width:52px;" value="${fmtNum(val)}" onchange="setCountValue('${f.id}','${phase}',this.value)">
+        <button onclick="adjustCount('${f.id}','${phase}',0.25)">+</button>
+      </div></div>`;
+    }).join('')}
+  </div>
+  <div class="btn-row">
+    ${phase==='neg14'?`<button class="btn btn-outline" onclick="setCountPhase('neg20')">${icon('chev')} Back</button>`:''}
+    <button class="btn btn-primary btn-block" onclick="${phase==='neg20'?'setCountPhase(\'neg14\')':'commitStockCount()'}">${phase==='neg20'?'Continue to −14 →':'Save stock count'}</button>
+  </div>
+  `;
+}
+
+function deliveryFlow(){
+  const flavours = alpha(DB.flavours.filter(f=>f.active));
+  return `
+  <div class="card">
+    <div class="card-title"><span style="display:flex;align-items:center;gap:7px;">${icon('truck')} Delivery received</span></div>
+    <p class="hint" style="margin-bottom:10px;">Enter total bladders received per flavour. This adds to current bladder stock — no expiry date needed. Only tap the warning flag on the bladders that actually need one.</p>
+    ${flavours.map(f=>{
+      const val = State.deliveryDraft[f.id] ?? 0;
+      const alerts = activeAlertsFor(f.id);
+      return `<div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name} ${alerts.length?`<span class="badge b-amber">${alerts.length} flagged</span>`:''}</div>
+      <div class="row-meta">Currently ${((DB.stock[f.id]||{}).bladders)||0} in cool room</div></div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button class="btn-ghost btn-sm" title="Flag an expiry on this delivery" onclick="openAlertModal('${f.id}', ${val>0?val:1})">${icon('alert')}</button>
+        <div class="stepper">
+          <button onclick="adjustDelivery('${f.id}',-1)">−</button>
+          <input class="val-input" type="number" inputmode="numeric" min="0" step="1" value="${val}" onchange="setDeliveryValue('${f.id}',this.value)">
+          <button onclick="adjustDelivery('${f.id}',1)">+</button>
+        </div>
+      </div></div>`;
+    }).join('')}
+  </div>
+  <button class="btn btn-primary btn-block" onclick="commitDelivery()">${icon('truck')} Save delivery</button>
+  `;
+}
+
+function alertsFlow(){
+  const active = DB['expiry-alerts'].filter(a=>!a.resolved);
+  const urgencyMeta = {today:['Use today','b-red'], next:['Use next churn day','b-amber'], watch:['Watch','b-neutral']};
+  return `
+  <button class="btn btn-copper btn-block" style="margin-bottom:14px;" onclick="openAlertModal()">${icon('plus')} Flag an expiring bladder</button>
+  <div class="card">
+    <div class="card-title">Active alerts <span class="badge b-neutral">${active.length}</span></div>
+    ${active.length===0?`<div class="empty">${icon('alert')}<p>No expiry alerts right now.</p></div>`:
+    active.map(a=>{ const f=DB.flavours.find(x=>x.id===a.flavourId); const [lbl,cls]=urgencyMeta[a.urgency];
+      return `<div class="row"><div class="row-main"><div class="row-title">${f?f.name:'?'}</div>
+      <div class="row-meta">${a.bladderCount} bladder${a.bladderCount==1?'':'s'}${a.expiryDate?' · exp '+a.expiryDate:''}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><span class="badge ${cls}">${lbl}</span>
+      <button class="btn-ghost btn-sm" onclick="resolveAlert('${a.id}')">${icon('x')}</button></div></div>`; }).join('')}
+  </div>
+  `;
+}
+
+/* ---------------- FLAVOURS view ---------------- */
+function flavoursView(){
+  if(State.role!=='manager'){
+    return `<div class="page-head"><h1 class="page-title">Flavours</h1></div><div class="empty">${icon('flavours')}<p>Only managers can edit the flavour master list.</p></div>`;
+  }
+  return `
+  <div class="page-head"><h1 class="page-title">Flavours</h1><p class="page-sub">Master list, PAR levels, wash rules.</p></div>
+  <div class="subtabs">
+    <button class="subtab ${State.flavourSub==='list'?'active':''}" onclick="setFlavourSub('list')">All flavours</button>
+    <button class="subtab ${State.flavourSub==='specials'?'active':''}" onclick="setFlavourSub('specials')">Monthly specials</button>
+    <button class="subtab ${State.flavourSub==='groups'?'active':''}" onclick="setFlavourSub('groups')">Allergy groups</button>
+  </div>
+  ${State.flavourSub==='list'?flavourList():State.flavourSub==='specials'?specialsPanel():groupsPanel()}
+  `;
+}
+
+function flavourList(){
+  const list = alpha(DB.flavours);
+  return `
+  <button class="btn btn-outline btn-block" style="margin-bottom:14px;" onclick="openFlavourModal(null)">${icon('plus')} Add flavour</button>
+  <div class="card">
+    ${list.map(f=>{
+      const bakedCount = (f.components||[]).filter(c=>c.needsBaking).length;
+      return `<div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name} ${f.popular?icon('star','ink-faint'):''} ${f.isSpecial?'<span class="badge b-copper">Special</span>':''} ${!f.active?'<span class="badge b-neutral">Inactive</span>':''} ${f.washAlwaysAfter?'<span class="badge b-teal">Always wash</span>':''} ${f.groupUnconfirmed?'<span class="badge b-amber">Confirm group</span>':''}</div>
+      <div class="row-meta">${groupInfo(f.group).name} · PAR ${fmtNum(f.par)} · ${fmtNum(f.yieldPotsPerBladder)} pots/bladder${(f.components||[]).length?` · ${f.components.length} component${f.components.length==1?'':'s'}${bakedCount?` (${bakedCount} baked)`:''}`:''}</div></div>
+      <button class="btn-ghost btn-sm" onclick="openFlavourModal('${f.id}')">${icon('edit')}</button></div>`;
+    }).join('')}
+  </div>
+  `;
+}
+
+function specialsPanel(){
+  const current = alpha(DB.flavours.filter(f=>f.isSpecial && f.active));
+  const archive = DB.specials.archive||[];
+  return `
+  <div class="card">
+    <div class="card-title">Current specials <span class="badge b-neutral">${current.length}</span></div>
+    ${current.length===0?`<div class="empty">${icon('flavours')}<p>No specials loaded for this month yet.</p></div>`:
+    current.map(f=>`<div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name} ${f.groupUnconfirmed?'<span class="badge b-amber">Confirm group</span>':''}</div></div>
+    <div style="display:flex;gap:4px;">
+      <button class="btn-ghost btn-sm" title="Edit" onclick="openFlavourModal('${f.id}')">${icon('edit')}</button>
+      <button class="btn-ghost btn-sm" title="Archive this one" onclick="archiveOneSpecial('${f.id}')">${icon('archive')}</button>
+    </div></div>`).join('')}
+    <div class="btn-row" style="margin-top:10px;">
+      <button class="btn btn-copper btn-block" onclick="openBulkSpecialsModal()">${icon('plus')} Add this month's specials</button>
+    </div>
+    <button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="archiveSpecials()">${icon('archive')} Remove all this month's specials</button>
+    <p class="hint" style="margin-top:8px;">Archiving keeps history (hidden from stock/production) rather than deleting — if the same special comes back later, adding it by name brings its old settings back too. Use the small archive icon to retire just one special; the button below retires all of them at once.</p>
+  </div>
+  ${archive.length?`<div class="card"><div class="card-title">Archive</div>
+    ${archive.map(batch=>`<div class="card-flat"><div class="row-title" style="margin-bottom:4px;">${batch.label}</div>
+    <div class="row-meta">${batch.names.join(', ')}</div></div>`).join('')}
+  </div>`:''}
+  `;
+}
+
+function groupsPanel(){
+  const groups = getGroups();
+  const counts = {};
+  DB.flavours.forEach(f=>{ counts[f.group] = (counts[f.group]||0)+1; });
+  return `
+  <div class="card">
+    <div class="card-title">Allergy / wash groups <span class="badge b-neutral">${groups.length}</span></div>
+    <p class="hint" style="margin-bottom:12px;">These control both allergen separation and churn order — within a group, flavours churn top to bottom, and the machine is washed between groups by default. Reordering these changes the churn sequence.</p>
+    ${groups.map((g,i)=>`
+    <div class="card-flat">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="gswatch" style="background:${g.color};width:14px;height:14px;flex-shrink:0;"></span>
+        <input type="text" value="${g.name}" onchange="renameGroup('${g.id}', this.value)" style="flex:1;">
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+        <span class="hint">${counts[g.id]||0} flavour${(counts[g.id]||0)==1?'':'s'} in this group</span>
+        <div style="display:flex;gap:2px;">
+          <button class="btn-ghost btn-sm" ${i===0?'disabled':''} onclick="moveGroup('${g.id}',-1)">↑</button>
+          <button class="btn-ghost btn-sm" ${i===groups.length-1?'disabled':''} onclick="moveGroup('${g.id}',1)">↓</button>
+          <button class="btn-ghost btn-sm" onclick="deleteGroup('${g.id}')">${icon('x')}</button>
+        </div>
+      </div>
+    </div>`).join('')}
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <input type="text" id="newGroupName" placeholder="New group name">
+      <button class="btn btn-outline btn-sm" onclick="addGroup()">${icon('plus')} Add</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ---------------- REPORTS view ---------------- */
+function reportsView(){
+  if(State.role!=='manager'){
+    return `<div class="page-head"><h1 class="page-title">Reports</h1></div><div class="empty">${icon('reports')}<p>Manager only.</p></div>`;
+  }
+  const hist = DB['stock-history'];
+  const flagged = flavoursFrequentlyLow();
+  return `
+  <div class="page-head"><h1 class="page-title">Reports</h1><p class="page-sub">Estimates to help decide what to order.</p></div>
+
+  <div class="card">
+    <div class="card-title">Snapshot log <span class="badge b-neutral">${hist.length}</span></div>
+    ${hist.length===0?`<div class="empty">${icon('reports')}<p>No stock snapshots yet — take a stock count to start building history.</p></div>`:
+    hist.slice(-8).reverse().map(h=>`<div class="row"><div class="row-main"><div class="row-title">${fmtDate(h.date)}</div>
+    <div class="row-meta">${h.totalPots} pots total across ${h.flavourCount} flavours</div></div></div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="card-title">Estimated sell-through</div>
+    <p class="hint" style="margin-bottom:10px;">Estimate, not a POS integration. Formula: previous stock + produced − current stock = sold.</p>
+    ${renderSellThrough()}
+  </div>
+
+  <div class="card">
+    <div class="card-title">Frequently low</div>
+    ${flagged.length===0?`<div class="empty">${icon('reports')}<p>No flavours are trending low yet.</p></div>`:
+    flagged.map(f=>`<div class="row"><div class="row-main"><div class="row-title">${groupDot(f.group)} ${f.name}</div>
+    <div class="row-meta">Below PAR in recent snapshots — consider increasing PAR or delivery volume.</div></div>
+    <span class="badge b-amber">Watch</span></div>`).join('')}
+  </div>
+  `;
+}
+function renderSellThrough(){
+  const hist = DB['stock-history'];
+  if(hist.length<2) return `<p class="hint">Need at least two stock snapshots to estimate sell-through.</p>`;
+  const last = hist[hist.length-1], prev = hist[hist.length-2];
+  const rows = Object.keys(last.byFlavour||{}).map(fid=>{
+    const f = DB.flavours.find(x=>x.id===fid); if(!f) return null;
+    const prevTotal = (prev.byFlavour[fid]||{}).total ?? 0;
+    const curTotal = (last.byFlavour[fid]||{}).total ?? 0;
+    const produced = (last.producedSince && last.producedSince[fid]) || 0;
+    const sold = Math.max(0, prevTotal + produced - curTotal);
+    return {name:f.name, group:f.group, sold};
+  }).filter(Boolean).sort((a,b)=>b.sold-a.sold).slice(0,8);
+  if(!rows.length) return `<p class="hint">Not enough data yet.</p>`;
+  const max = Math.max(...rows.map(r=>r.sold),1);
+  return rows.map(r=>`<div style="margin-bottom:9px;">
+    <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;"><span>${groupDot(r.group)} ${r.name}</span><span class="mono">${r.sold} pots</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${(r.sold/max*100)}%;background:var(--copper);"></div></div>
+  </div>`).join('');
+}
+function flavoursFrequentlyLow(){
+  const hist = DB['stock-history'].slice(-6);
+  if(hist.length<3) return [];
+  const counts = {};
+  hist.forEach(h=>Object.entries(h.byFlavour||{}).forEach(([fid,rec])=>{
+    const f = DB.flavours.find(x=>x.id===fid); if(!f) return;
+    if(rec.total<f.par) counts[fid]=(counts[fid]||0)+1;
+  }));
+  return Object.entries(counts).filter(([,c])=>c>=Math.ceil(hist.length*0.6)).map(([fid])=>DB.flavours.find(f=>f.id===fid)).filter(Boolean);
+}
+
+/* ---------------- Modal ---------------- */
+function modalWrap(){
+  if(!State.modal) return '';
+  let body='';
+  if(State.modal.type==='alert') body = alertModalBody();
+  if(State.modal.type==='flavour') body = flavourModalBody();
+  if(State.modal.type==='bulkSpecials') body = bulkSpecialsModalBody();
+  return `<div class="modal-backdrop" onclick="closeModalBackdrop(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div>${body}</div>
+  </div>`;
+}
+function alertModalBody(){
+  const m = State.modal;
+  const flavours = alpha(DB.flavours.filter(f=>f.active));
+  return `
+  <div class="modal-title">Flag an expiring bladder</div>
+  <div class="field"><label class="field-label">Flavour</label>
+    <select id="alertFlavour">${flavours.map(f=>`<option value="${f.id}" ${m.flavourId===f.id?'selected':''}>${f.name}</option>`).join('')}</select>
+  </div>
+  <div class="field"><label class="field-label">Bladders affected</label>
+    <div class="stepper"><button onclick="modalAdjust('bladderCount',-1)">−</button><input class="val-input" type="number" inputmode="numeric" min="1" step="1" value="${m.bladderCount}" onchange="setModalBladderCount(this.value)"><button onclick="modalAdjust('bladderCount',1)">+</button></div>
+  </div>
+  <div class="field"><label class="field-label">Urgency</label>
+    <div class="seg">
+      <button class="${m.urgency==='today'?'active':''}" onclick="modalSet('urgency','today')">Use today</button>
+      <button class="${m.urgency==='next'?'active':''}" onclick="modalSet('urgency','next')">Next churn</button>
+      <button class="${m.urgency==='watch'?'active':''}" onclick="modalSet('urgency','watch')">Watch</button>
+    </div>
+  </div>
+  <div class="field"><label class="field-label">Expiry date (optional)</label>
+    <input type="date" id="alertDate" value="${m.expiryDate||''}">
+  </div>
+  <div class="btn-row"><button class="btn btn-outline btn-block" onclick="closeModal()">Cancel</button>
+  <button class="btn btn-primary btn-block" onclick="saveAlert()">Save alert</button></div>
+  `;
+}
+function flavourModalBody(){
+  const m = State.modal;
+  const isNew = !m.id;
+  const comps = m.components || [];
+  return `
+  <div class="modal-title">${isNew?'Add flavour':'Edit flavour'}</div>
+  <div class="field"><label class="field-label">Name</label><input type="text" id="fName" value="${m.name||''}"></div>
+  <div class="grid-2">
+    <div class="field"><label class="field-label">Group</label><select id="fGroup">${getGroups().map(g=>`<option value="${g.id}" ${m.group===g.id?'selected':''}>${g.name}</option>`).join('')}</select></div>
+    <div class="field"><label class="field-label">Position in group</label><input type="number" id="fOrder" value="${m.groupOrder||1}" min="1"></div>
+  </div>
+  <div class="grid-2">
+    <div class="field"><label class="field-label">PAR — target total pots</label><input type="number" step="0.25" id="fPar" value="${fmtNum(m.par ?? 2)}" min="0"></div>
+    <div class="field"><label class="field-label">Pots per bladder</label><input type="number" step="0.25" id="fYield" value="${fmtNum(m.yieldPotsPerBladder ?? 2.5)}" min="0.1"></div>
+  </div>
+  <p class="hint" style="margin:-6px 0 12px;">PAR is the combined target across both the −20 and −14 freezers, not per freezer.</p>
+  <div class="field"><label class="field-label">Instructions / notes</label><textarea id="fNotes">${m.notes||''}</textarea></div>
+
+  <div class="field">
+    <label class="field-label">Components</label>
+    <p class="hint" style="margin-bottom:8px;">What goes into one bladder of this flavour — base, blend-ins, toppings. Tick "needs baking" for anything staff should prepare ahead of the churner starting.</p>
+    ${comps.map((c,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <input type="text" id="compName_${i}" value="${c.name||''}" placeholder="e.g. Macadamia paste" style="flex:1;">
+      <label style="display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--ink-soft);white-space:nowrap;">
+        <input type="checkbox" id="compBake_${i}" ${c.needsBaking?'checked':''} style="width:auto;">Bake
+      </label>
+      <button class="btn-ghost btn-sm" onclick="removeComponentRow(${i})">${icon('x')}</button>
+    </div>`).join('')}
+    <button class="btn btn-outline btn-sm" onclick="addComponentRow()">${icon('plus')} Add component</button>
+  </div>
+
+  <div class="field" style="display:flex;gap:18px;flex-wrap:wrap;">
+    <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;"><input type="checkbox" id="fPopular" ${m.popular?'checked':''} style="width:auto;"> Popular flavour</label>
+    <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;"><input type="checkbox" id="fSpecial" ${m.isSpecial?'checked':''} style="width:auto;"> Monthly special</label>
+    <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;"><input type="checkbox" id="fWash" ${m.washAlwaysAfter?'checked':''} style="width:auto;"> Always wash after</label>
+    <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;"><input type="checkbox" id="fActive" ${m.active!==false?'checked':''} style="width:auto;"> Active</label>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline btn-block" onclick="closeModal()">Cancel</button>
+  <button class="btn btn-primary btn-block" onclick="saveFlavour()">Save flavour</button></div>
+  ${!isNew?`<div class="divider"></div>
+  <button class="btn ${m.confirmDelete?'btn-danger':'btn-ghost'} btn-block" onclick="requestDeleteFlavour()">${icon('archive')} ${m.confirmDelete?'Tap again to permanently delete':'Delete flavour'}</button>
+  ${m.confirmDelete?'<p class="hint" style="text-align:center;margin-top:6px;">This removes it completely, including its stock record. This can\u2019t be undone.</p>':''}`:''}
+  `;
+}
+function bulkSpecialsModalBody(){
+  return `
+  <div class="modal-title">Add this month's specials</div>
+  <p class="hint" style="margin-bottom:10px;">Paste one flavour name per line. A name that matches an existing (archived) flavour brings back its old group, yield and PAR — a brand new name is added with defaults you can fine-tune afterwards, flagged with a "Confirm group" badge until you do.</p>
+  <div class="field"><textarea id="bulkNames" rows="8" placeholder="Bertha loves mertha\nBlueberry cheesecake\nCrunch time\n…"></textarea></div>
+  <div class="btn-row"><button class="btn btn-outline btn-block" onclick="closeModal()">Cancel</button>
+  <button class="btn btn-primary btn-block" onclick="saveBulkSpecials()">Add specials</button></div>
+  `;
+}
+
+/* ---------------- Event handlers ---------------- */
+async function setRole(r){ State.role=r; State.tab='today'; render(); }
+function switchRole(){ State.role=null; render(); }
+function setTab(t){ State.tab=t; State.workflowGroup=null; render(); }
+function goTab(t){ setTab(t); }
+function setPlanDate(d){ State.planDate=d; render(); }
+function setBakeDate(d){ State.bakeDate=d; render(); }
+function setStockSub(s){ State.stockSub=s; render(); }
+function setFlavourSub(s){ State.flavourSub=s; render(); }
+function setCountPhase(p){ State.countPhase=p; render(); }
+function setWorkflowGroup(g){ State.workflowGroup=g; render(); }
+
+async function doGeneratePlans(){
+  await generatePlans();
+  toast('Recommendations generated');
+  render();
+}
+
+function adjustApproved(dateISO, flavourId, delta){
+  const plan = DB['production-plans'][dateISO];
+  const item = plan.approved.find(a=>a.flavourId===flavourId);
+  item.bladders = Math.max(0, item.bladders+delta);
+  save('production-plans');
+  render();
+}
+function setApprovedValue(dateISO, flavourId, raw){
+  const plan = DB['production-plans'][dateISO];
+  const item = plan.approved.find(a=>a.flavourId===flavourId);
+  const v = parseFloat(raw);
+  item.bladders = Math.max(0, Math.round(isNaN(v)?item.bladders:v));
+  save('production-plans');
+  render();
+}
+
+function adjustCount(flavourId, phase, delta){
+  if(!State.countDraft[flavourId]) State.countDraft[flavourId] = {neg20:(DB.stock[flavourId]||{}).neg20||0, neg14:(DB.stock[flavourId]||{}).neg14||0};
+  State.countDraft[flavourId][phase] = snapQuarter((State.countDraft[flavourId][phase]||0)+delta);
+  render();
+}
+function setCountValue(flavourId, phase, raw){
+  if(!State.countDraft[flavourId]) State.countDraft[flavourId] = {neg20:(DB.stock[flavourId]||{}).neg20||0, neg14:(DB.stock[flavourId]||{}).neg14||0};
+  const v = parseFloat(raw);
+  State.countDraft[flavourId][phase] = snapQuarter(isNaN(v)?0:v);
+  render();
+}
+async function commitStockCount(){
+  const snapshot = { date: todayISO(), byFlavour:{}, totalPots:0, flavourCount:0, producedSince:{} };
+  DB.flavours.forEach(f=>{
+    const prevStock = DB.stock[f.id] || {neg20:0,neg14:0,bladders:0};
+    const draft = State.countDraft[f.id];
+    const neg20 = draft?.neg20 ?? prevStock.neg20;
+    const neg14 = draft?.neg14 ?? prevStock.neg14;
+    DB.stock[f.id] = {...prevStock, neg20, neg14, updatedAt:new Date().toISOString()};
+    if(f.active){ snapshot.byFlavour[f.id]={total:neg20+neg14}; snapshot.totalPots+=neg20+neg14; snapshot.flavourCount++; }
+  });
+  // produced since last snapshot = sum of completed churner bladders * yield since last snapshot date
+  const lastSnap = DB['stock-history'][DB['stock-history'].length-1];
+  const sinceDate = lastSnap ? lastSnap.date : null;
+  Object.entries(DB['production-plans']).forEach(([d,plan])=>{
+    if(sinceDate && d<sinceDate) return;
+    Object.keys(plan.completed||{}).forEach(key=>{
+      // count each fully-completed flavour step once
+    });
+    plan.approved.forEach(a=>{
+      const doneFlavourSteps = Object.keys(plan.completed||{}).filter(k=>k.includes('_flavour_'+a.flavourId));
+      if(doneFlavourSteps.length){
+        const f = DB.flavours.find(x=>x.id===a.flavourId); if(!f) return;
+        snapshot.producedSince[a.flavourId] = (snapshot.producedSince[a.flavourId]||0) + a.bladders*f.yieldPotsPerBladder;
+      }
+    });
+  });
+  DB['stock-history'].push(snapshot);
+  State.countDraft = {}; State.countPhase='neg20';
+  await save('stock'); await save('stock-history');
+  toast('Stock count saved — now log today\u2019s delivery');
+  State.tab='stock'; State.stockSub='delivery'; render();
+}
+
+function adjustDelivery(flavourId, delta){
+  State.deliveryDraft[flavourId] = Math.max(0, (State.deliveryDraft[flavourId]||0)+delta);
+  render();
+}
+function setDeliveryValue(flavourId, raw){
+  const v = parseFloat(raw);
+  State.deliveryDraft[flavourId] = Math.max(0, Math.round(isNaN(v)?0:v));
+  render();
+}
+async function commitDelivery(){
+  let any=false;
+  Object.entries(State.deliveryDraft).forEach(([fid,qty])=>{
+    if(qty>0){ any=true; const s = DB.stock[fid]||{neg20:0,neg14:0,bladders:0}; s.bladders=(s.bladders||0)+qty; s.updatedAt=new Date().toISOString(); DB.stock[fid]=s; }
+  });
+  if(!any){ toast('No quantities entered'); return; }
+  State.deliveryDraft = {};
+  await save('stock');
+  // Prediction is deliberately re-run right here: it should reflect today's
+  // delivered bladders together with the pot counts just taken, not stale data.
+  await generatePlans();
+  toast('Delivery saved — recommendations updated');
+  State.tab='today'; render();
+}
+
+function openAlertModal(prefillFlavourId, prefillCount){ State.modal = {type:'alert', flavourId: prefillFlavourId || DB.flavours[0]?.id, bladderCount: prefillCount || 1, urgency:'watch', expiryDate:''}; render(); }
+function modalAdjust(field,delta){ State.modal[field]=Math.max(1,(State.modal[field]||1)+delta); render(); }
+function modalSet(field,val){ State.modal[field]=val; render(); }
+function setModalBladderCount(raw){
+  const v = parseInt(raw,10);
+  State.modal.bladderCount = Math.max(1, isNaN(v)?1:v);
+  render();
+}
+async function saveAlert(){
+  const flavourId = document.getElementById('alertFlavour').value;
+  const expiryDate = document.getElementById('alertDate').value;
+  DB['expiry-alerts'].push({ id:uid('al'), flavourId, bladderCount:State.modal.bladderCount, urgency:State.modal.urgency, expiryDate, resolved:false, createdAt:new Date().toISOString() });
+  await save('expiry-alerts');
+  State.modal=null; toast('Alert added'); render();
+}
+async function resolveAlert(id){
+  const a = DB['expiry-alerts'].find(x=>x.id===id); if(a) a.resolved=true;
+  await save('expiry-alerts'); render();
+}
+
+function openFlavourModal(id, asSpecial){
+  if(id){
+    const f = DB.flavours.find(x=>x.id===id);
+    State.modal = {type:'flavour', ...f, components:(f.components||[]).map(c=>({...c})), confirmDelete:false};
+  } else {
+    const firstGroup = groupOrderIds()[0] || 'A';
+    State.modal = {type:'flavour', id:null, name:'', group:firstGroup, groupOrder:1, par:2, yieldPotsPerBladder:2.5, prodTimeMinPerBladder:15, isSpecial:!!asSpecial, active:true, components:[]};
+  }
+  render();
+}
+function syncComponentsFromDOM(){
+  if(!State.modal || !State.modal.components) return;
+  State.modal.components = State.modal.components.map((c,i)=>{
+    const nameEl = document.getElementById('compName_'+i);
+    const bakeEl = document.getElementById('compBake_'+i);
+    return { ...c, name: nameEl ? nameEl.value : c.name, needsBaking: bakeEl ? bakeEl.checked : c.needsBaking };
+  });
+}
+/* Captures every editable field on the flavour modal back into State.modal.
+   Must run before any action that re-renders the modal without saving
+   (adding/removing a component, arming the delete confirm) — otherwise the
+   re-render rebuilds the form from the stale snapshot taken when the modal
+   was first opened, silently discarding whatever the person just typed. */
+function syncFlavourModalFromDOM(){
+  if(!State.modal || State.modal.type!=='flavour') return;
+  const el = id => document.getElementById(id);
+  if(el('fName')) State.modal.name = el('fName').value;
+  if(el('fGroup')) State.modal.group = el('fGroup').value;
+  if(el('fOrder')) State.modal.groupOrder = Number(el('fOrder').value)||1;
+  if(el('fPar')) State.modal.par = Number(el('fPar').value)||0;
+  if(el('fYield')) State.modal.yieldPotsPerBladder = Number(el('fYield').value)||1;
+  if(el('fNotes')) State.modal.notes = el('fNotes').value;
+  if(el('fPopular')) State.modal.popular = el('fPopular').checked;
+  if(el('fSpecial')) State.modal.isSpecial = el('fSpecial').checked;
+  if(el('fWash')) State.modal.washAlwaysAfter = el('fWash').checked;
+  if(el('fActive')) State.modal.active = el('fActive').checked;
+  syncComponentsFromDOM();
+}
+function addComponentRow(){
+  syncFlavourModalFromDOM();
+  if(!State.modal.components) State.modal.components=[];
+  State.modal.components.push({id:uid('cmp'), name:'', needsBaking:false});
+  render();
+}
+function removeComponentRow(idx){
+  syncFlavourModalFromDOM();
+  State.modal.components.splice(idx,1);
+  render();
+}
+async function saveFlavour(){
+  syncComponentsFromDOM();
+  const data = {
+    name: document.getElementById('fName').value.trim(),
+    group: document.getElementById('fGroup').value,
+    groupOrder: Number(document.getElementById('fOrder').value)||1,
+    par: Number(document.getElementById('fPar').value)||0,
+    yieldPotsPerBladder: Number(document.getElementById('fYield').value)||1,
+    notes: document.getElementById('fNotes').value,
+    popular: document.getElementById('fPopular').checked,
+    isSpecial: document.getElementById('fSpecial').checked,
+    washAlwaysAfter: document.getElementById('fWash').checked,
+    active: document.getElementById('fActive').checked,
+    groupUnconfirmed: false,
+    components: (State.modal.components||[]).filter(c=>c.name && c.name.trim()).map(c=>({id:c.id||uid('cmp'), name:c.name.trim(), needsBaking:!!c.needsBaking})),
+  };
+  // prodTimeMinPerBladder and allergenNotes are no longer editable here — for an
+  // existing flavour the spread below leaves whatever value it already had
+  // untouched; for a brand new flavour, capacity calc falls back to the shift's
+  // default production time automatically when the field is absent.
+  if(!data.name){ toast('Name is required'); return; }
+  if(State.modal.id){
+    const idx = DB.flavours.findIndex(f=>f.id===State.modal.id);
+    DB.flavours[idx] = {...DB.flavours[idx], ...data};
+  } else {
+    const newF = {id:uid('fl'), ...data, photoRef:''};
+    DB.flavours.push(newF);
+    if(!DB.stock[newF.id]) DB.stock[newF.id] = {neg20:0,neg14:0,bladders:0,updatedAt:new Date().toISOString()};
+    await save('stock');
+  }
+  await save('flavours');
+  State.modal=null; toast('Flavour saved'); render();
+}
+function requestDeleteFlavour(){
+  if(State.modal.confirmDelete){ deleteFlavourConfirmed(); return; }
+  syncFlavourModalFromDOM();
+  State.modal.confirmDelete = true; render();
+}
+async function deleteFlavourConfirmed(){
+  const id = State.modal.id;
+  DB.flavours = DB.flavours.filter(f=>f.id!==id);
+  delete DB.stock[id];
+  DB['expiry-alerts'] = DB['expiry-alerts'].filter(a=>a.flavourId!==id);
+  await save('flavours'); await save('stock'); await save('expiry-alerts');
+  State.modal=null; toast('Flavour deleted'); render();
+}
+async function archiveSpecials(){
+  const current = DB.flavours.filter(f=>f.isSpecial && f.active);
+  if(!current.length){ toast('No current specials to archive'); return; }
+  const label = new Date().toLocaleDateString('en-AU',{month:'long', year:'numeric'});
+  DB.specials.archive.push({ label, names: current.map(f=>f.name), archivedAt:new Date().toISOString() });
+  current.forEach(f=>{ f.active=false; });
+  await save('flavours'); await save('specials');
+  toast('Specials archived'); render();
+}
+async function archiveOneSpecial(id){
+  const f = DB.flavours.find(x=>x.id===id && x.isSpecial);
+  if(!f){ toast('Special not found'); return; }
+  const label = `${f.name} (archived ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})})`;
+  DB.specials.archive.push({ label, names:[f.name], archivedAt:new Date().toISOString() });
+  f.active = false;
+  await save('flavours'); await save('specials');
+  toast(`${f.name} archived`); render();
+}
+
+async function renameGroup(id, name){
+  const g = getGroups().find(x=>x.id===id);
+  if(g && name.trim()){ g.name = name.trim(); await save('wash-config'); toast('Group renamed'); }
+  render();
+}
+async function moveGroup(id, dir){
+  const groups = getGroups();
+  const idx = groups.findIndex(g=>g.id===id);
+  const newIdx = idx+dir;
+  if(idx<0 || newIdx<0 || newIdx>=groups.length) return;
+  const tmp = groups[idx]; groups[idx]=groups[newIdx]; groups[newIdx]=tmp;
+  await save('wash-config'); render();
+}
+async function addGroup(){
+  const input = document.getElementById('newGroupName');
+  const name = (input.value||'').trim();
+  if(!name){ toast('Enter a group name'); return; }
+  const groups = getGroups();
+  const color = GROUP_COLOR_PALETTE[groups.length % GROUP_COLOR_PALETTE.length];
+  groups.push({id:uid('grp'), name, color});
+  await save('wash-config');
+  toast('Group added'); render();
+}
+async function deleteGroup(id){
+  const inUse = DB.flavours.some(f=>f.group===id);
+  if(inUse){ toast('Reassign flavours out of this group before deleting it'); return; }
+  const groups = getGroups();
+  if(groups.length<=1){ toast('At least one group is required'); return; }
+  DB['wash-config'].groups = groups.filter(g=>g.id!==id);
+  await save('wash-config'); render();
+}
+
+function openBulkSpecialsModal(){ State.modal = {type:'bulkSpecials'}; render(); }
+async function saveBulkSpecials(){
+  const raw = document.getElementById('bulkNames').value;
+  const names = raw.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!names.length){ toast('Paste at least one flavour name'); return; }
+  let added=0, revived=0;
+  names.forEach(name=>{
+    const existing = DB.flavours.find(f=>f.name.toLowerCase()===name.toLowerCase());
+    if(existing){
+      existing.active = true; existing.isSpecial = true; existing.groupUnconfirmed = false;
+      revived++;
+    } else {
+      const newF = {
+        id:uid('fl'), name, active:true, isSpecial:true, popular:false,
+        group:'A', groupOrder:90, par:2, yieldPotsPerBladder:2.5, prodTimeMinPerBladder:15,
+        allergenNotes:'', washAlwaysAfter:false,
+        notes:'This month\u2019s special \u2014 confirm group, allergens and yield.',
+        photoRef:'', groupUnconfirmed:true,
+      };
+      DB.flavours.push(newF);
+      DB.stock[newF.id] = {neg20:0,neg14:0,bladders:0,updatedAt:new Date().toISOString()};
+      added++;
+    }
+  });
+  await save('flavours'); await save('stock');
+  State.modal=null;
+  toast(`Added ${added+revived} special${added+revived==1?'':'s'}${revived?` (${revived} reused past settings)`:''}`);
+  render();
+}
+
+function closeModal(){ State.modal=null; render(); }
+function closeModalBackdrop(e){ if(e.target.classList.contains('modal-backdrop')) closeModal(); }
+
+async function toggleStep(dateISO, key){
+  const plan = DB['production-plans'][dateISO];
+  if(!plan.completed) plan.completed = {};
+  if(plan.completed[key]) delete plan.completed[key]; else plan.completed[key]=true;
+  await save('production-plans');
+  render();
+}
+async function toggleBaking(dateISO, key){
+  const plan = DB['production-plans'][dateISO];
+  if(!plan.bakingCompleted) plan.bakingCompleted = {};
+  if(plan.bakingCompleted[key]) delete plan.bakingCompleted[key]; else plan.bakingCompleted[key]=true;
+  await save('production-plans');
+  render();
+}
+
+function wireGlobalEvents(){
+  const bar = document.querySelector('.topbar');
+  const app = document.getElementById('app');
+  if(app && bar){
+    app.onscroll = ()=>{ bar.classList.toggle('scrolled', app.scrollTop>4); };
+  }
+}
+
+/* expose handlers */
+Object.assign(window, {setRole,switchRole,setTab,goTab,setPlanDate,setBakeDate,setStockSub,setFlavourSub,setCountPhase,
+  setWorkflowGroup,doGeneratePlans,adjustApproved,setApprovedValue,adjustCount,setCountValue,commitStockCount,
+  adjustDelivery,setDeliveryValue,commitDelivery,
+  openAlertModal,modalAdjust,modalSet,setModalBladderCount,saveAlert,resolveAlert,openFlavourModal,saveFlavour,
+  requestDeleteFlavour,addComponentRow,removeComponentRow,archiveSpecials,archiveOneSpecial,
+  openBulkSpecialsModal,saveBulkSpecials,renameGroup,moveGroup,addGroup,deleteGroup,
+  closeModal,closeModalBackdrop,toggleStep,toggleBaking});
+
+/* ---------------- Boot ---------------- */
+(async function boot(){
+  render();
+  await loadAll();
+  State.loaded = true;
+  render();
+})();
+</script>
+</body>
+</html>

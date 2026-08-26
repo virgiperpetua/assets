@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-41d1a528-5cf6-4a5c-84d4-f7ff95c3a42d/styles.css">
+<script src="_ds/modernist-41d1a528-5cf6-4a5c-84d4-f7ff95c3a42d/_ds_bundle.js"></script>
+<script src="./doc-page.js"></script>
+<style id="__om-edit-overrides"></style>
+<style>
+  doc-page:not(:defined){visibility:hidden}
+  :root{
+    --color-accent:#9b6ff3;--color-accent-100:#f5f1fe;--color-accent-200:#e9defd;--color-accent-300:#d3c0fb;
+    --color-accent-400:#b494f7;--color-accent-500:#9b6ff3;--color-accent-600:#8451e8;--color-accent-700:#6935c4;
+    --color-accent-800:#4f2696;--color-accent-900:#37196a;
+  }
+  .spec-table{width:100%;border-collapse:collapse;font-size:13px;margin:0 0 16px}
+  .spec-table th,.spec-table td{border-bottom:1px solid var(--color-divider);padding:8px 10px;text-align:left;vertical-align:top}
+  .spec-table th{font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text)}
+  .swatch{display:inline-block;width:14px;height:14px;margin-right:6px;vertical-align:-2px;border:1px solid var(--color-divider)}
+  .kicker{font-family:var(--font-heading);font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700);margin:0 0 4px}
+  .note{background:var(--color-surface);padding:14px 16px;font-size:13px;border-left:2px solid var(--color-accent);margin:0 0 16px}
+  code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12.5px;background:var(--color-surface);padding:1px 5px}
+</style>
+</helmet>
+
+<doc-page margin="0.85in">
+
+<div class="kicker">Personal Brand &amp; Design System Specification</div>
+<h1 style="margin-bottom:2px">Virginia Perpetua</h1>
+<p class="text-muted" style="font-size:14px;margin-bottom:18px">Emerging full-stack engineer &amp; IT graduate — Melbourne, Australia. Prepared as a governing reference for the personal brand ecosystem (website, resume, and future work).</p>
+<hr class="hr">
+
+<div class="note"><strong>Bound system note.</strong> This brand runs on the studio's <strong>Modernist</strong> design system: flat, Archivo-set, a single deliberate accent on a warm off-white ground, 2px rules, zero radius, grayscale photography. The system's default accent is retuned to a light purple (#9b6ff3) — the signature colour the brief calls for — while every other rule (one accent only, spent sparingly, ramped 100–900) stays exactly as Modernist defines it. Section 4 details the ramp.</div>
+
+<h2>1. Executive Creative Direction</h2>
+<p>Virginia is finishing an IT degree while running daily operations at a gelato store — the rare early-career candidate who has already managed a real, numbers-driven environment. The brand's job is to make one thing obvious in under a minute: <strong>she notices operational friction and builds working software for it</strong>, and she is now pointing that same instinct at full-stack engineering and AI/automation.</p>
+<p>Visual direction: <strong>a flat, gridded, editorial system</strong> — not a decorative "creative portfolio" and not a dry corporate resume site. Modernist's architecture (visible grid, strong rules, flush-left type, zero ornament) reads as systems-thinking made visible, which is exactly the story: an operator who organises chaos into clear structure. The accent is spent on hierarchy and a small number of high-conviction moments — the gelato case study's poster statement, primary actions, and the section that names her future direction — never as background decoration.</p>
+<table class="spec-table">
+<tr><th>Narrative spine</th><td>Observation → Build → Experiment → Grow</td></tr>
+<tr><th>Split</th><td>70% professional clarity, 30% expressive/editorial moments</td></tr>
+<tr><th>Primary proof point</th><td>Gelato Messina production &amp; stock-tracking tool (self-initiated, built while managing the store)</td></tr>
+<tr><th>Tone</th><td>Direct, practical, warm — never inflated, never apologetic about being early-career</td></tr>
+</table>
+
+<h2>2. Personal Brand → Visual Design Translation</h2>
+<table class="spec-table">
+<tr><th>Brand trait</th><th>Visual expression</th></tr>
+<tr><td>Practical, useful technology</td><td>Content-first layout; no decorative 3D, no stat theatre; every module answers "what does this do"</td></tr>
+<tr><td>Curiosity / experimentation</td><td>The accent ramp marks "in progress / exploring" states (tags, the Playground teaser); editorial pull-quotes break the grid on purpose, once per page</td></tr>
+<tr><td>Resilience &amp; growth</td><td>A visible timeline structure (About page) that includes the retaken-subject moment as one entry among others, same visual weight — not dramatized</td></tr>
+<tr><td>Operational, hands-on experience</td><td>Monospace metadata (dates, stack, role) throughout — reads like operational logs, not marketing copy</td></tr>
+<tr><td>Human, communicative, extroverted</td><td>A real portrait (grayscale, per system), first-person voice throughout, no third-person bio</td></tr>
+<tr><td>Multilingual, hospitality background</td><td>Languages and soft skills surfaced as first-class content on About/Resume, not buried</td></tr>
+</table>
+
+<h2>3. Design Principles</h2>
+<table class="spec-table">
+<tr><th>#</th><th>Principle</th><th>In practice</th></tr>
+<tr><td>1</td><td>Evidence over adjectives</td><td>Every claim on Home/About links to a project, a metric-free outcome, or a specific decision</td></tr>
+<tr><td>2</td><td>Useful complexity reduction</td><td>One idea per section; case study broken into short, labelled blocks a recruiter can skim in 20 seconds</td></tr>
+<tr><td>3</td><td>Structured experimentation</td><td>Bold moments (poster statement, pull-quotes) always sit inside the grid, never floating free</td></tr>
+<tr><td>4</td><td>Human technicality</td><td>Technical detail (stack, architecture) sits next to plain-language "why," never instead of it</td></tr>
+<tr><td>5</td><td>Accent with purpose</td><td>#ec3013 used only for: primary actions, the current section's active state, one poster moment per page, "exploring" tags</td></tr>
+<tr><td>6</td><td>Growth should be visible</td><td>Projects/Playground pages ship with visible "more coming" structure, not empty states</td></tr>
+<tr><td>7</td><td>Recruiter clarity first</td><td>Resume link and contact CTA present in the nav on every page, no exceptions</td></tr>
+</table>
+
+<h2>4. Colour System</h2>
+<p>Primitives are Modernist's own tonal-ramp structure, retuned to a light-purple accent. Full ramps below, at swatch size:</p>
+
+<div class="kicker" style="margin-top:8px">Neutral ramp</div>
+<div style="display:grid;grid-template-columns:repeat(9,1fr);gap:0;margin:0 0 18px;break-inside:avoid">
+  <div style="background:#f8f4f4;height:64px"></div><div style="background:#eae7e7;height:64px"></div><div style="background:#d7d3d3;height:64px"></div><div style="background:#bab6b6;height:64px"></div><div style="background:#9b9797;height:64px"></div><div style="background:#7d7979;height:64px"></div><div style="background:#605d5d;height:64px"></div><div style="background:#444141;height:64px"></div><div style="background:#2d2b2b;height:64px"></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(9,1fr);gap:0;margin:0 0 20px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;text-align:center;color:var(--color-text);opacity:.7">
+  <div>100<br>#f8f4f4</div><div>200<br>#eae7e7</div><div>300<br>#d7d3d3</div><div>400<br>#bab6b6</div><div>500<br>#9b9797</div><div>600<br>#7d7979</div><div>700<br>#605d5d</div><div>800<br>#444141</div><div>900<br>#2d2b2b</div>
+</div>
+
+<div class="kicker">Accent ramp — light purple</div>
+<div style="display:grid;grid-template-columns:repeat(9,1fr);gap:0;margin:0 0 18px;break-inside:avoid">
+  <div style="background:#f5f1fe;height:64px"></div><div style="background:#e9defd;height:64px"></div><div style="background:#d3c0fb;height:64px"></div><div style="background:#b494f7;height:64px"></div><div style="background:#9b6ff3;height:64px"></div><div style="background:#8451e8;height:64px"></div><div style="background:#6935c4;height:64px"></div><div style="background:#4f2696;height:64px"></div><div style="background:#37196a;height:64px"></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(9,1fr);gap:0;margin:0 0 24px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;text-align:center;color:var(--color-text);opacity:.7">
+  <div>100<br>#f5f1fe</div><div>200<br>#e9defd</div><div>300<br>#d3c0fb</div><div>400<br>#b494f7</div><div>500<br>#9b6ff3</div><div>600<br>#8451e8</div><div>700<br>#6935c4</div><div>800<br>#4f2696</div><div>900<br>#37196a</div>
+</div>
+
+<div class="kicker">Ground &amp; ink</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 6px;break-inside:avoid">
+  <div style="background:#f3f2f2;height:64px;border:1px solid var(--color-divider)"></div><div style="background:#eae9e9;height:64px;border:1px solid var(--color-divider)"></div><div style="background:#201e1d;height:64px"></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 20px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;text-align:center;color:var(--color-text);opacity:.7">
+  <div>bg · #f3f2f2</div><div>surface · #eae9e9</div><div>text · #201e1d</div>
+</div>
+
+<p>Semantic roles map onto these ramps as follows:</p>
+<table class="spec-table">
+<tr><th>Token</th><th>Value</th><th>Swatch</th><th>Role</th></tr>
+<tr><td><code>--color-bg</code></td><td>#f3f2f2</td><td><span class="swatch" style="background:#f3f2f2"></span></td><td>Page ground, light mode</td></tr>
+<tr><td><code>--color-surface</code></td><td>#eae9e9</td><td><span class="swatch" style="background:#eae9e9"></span></td><td>Cards, inputs, tag fills</td></tr>
+<tr><td><code>--color-text</code></td><td>#201e1d</td><td><span class="swatch" style="background:#201e1d"></span></td><td>Body/heading ink</td></tr>
+<tr><td><code>--color-accent</code></td><td>#9b6ff3</td><td><span class="swatch" style="background:#9b6ff3"></span></td><td>Signature accent — light purple, curiosity &amp; emphasis</td></tr>
+<tr><td><code>--color-accent-700</code></td><td>#6935c4</td><td><span class="swatch" style="background:#6935c4"></span></td><td>Accent text on tinted fills; body-size accent copy</td></tr>
+<tr><td><code>--color-neutral-100…900</code></td><td>#f8f4f4 → #2d2b2b</td><td></td><td>Warm-grey ramp for secondary/tertiary text, borders</td></tr>
+<tr><td><code>--color-divider</code></td><td>ink 40% mix</td><td></td><td>All rules and hairline borders</td></tr>
+</table>
+<p><strong>Semantic mapping used across the site:</strong></p>
+<table class="spec-table">
+<tr><th>Semantic role</th><th>Maps to</th></tr>
+<tr><td>background-default / background-subtle</td><td><code>--color-bg</code> / <code>--color-surface</code></td></tr>
+<tr><td>surface-default / surface-raised / surface-emphasis</td><td><code>--color-surface</code> / <code>--color-bg</code> + <code>--shadow-sm</code> / <code>--color-accent</code></td></tr>
+<tr><td>text-primary / secondary / tertiary</td><td><code>--color-text</code> / neutral-700 / neutral-500</td></tr>
+<tr><td>border-subtle / border-default</td><td>divider at 20% / divider at 40%</td></tr>
+<tr><td>action-primary / hover / secondary</td><td><code>--color-accent</code> / <code>--color-accent-600</code> / outline with divider border</td></tr>
+<tr><td>feedback success / warning / danger</td><td>neutral-800 + ✓ glyph / accent-500 tint / accent-700 (mono system — status is carried by label + icon, not a second/third hue)</td></tr>
+<tr><td>navigation-background</td><td><code>--color-bg</code>, 2px divider bottom, no shadow</td></tr>
+</table>
+<p><strong>Dark mode:</strong> ground drops to neutral-900 (#2d2b2b), surface to neutral-800, text inverts to neutral-100; accent shifts one step brighter (<code>--color-accent-400</code> #b494f7) to hold contrast on dark ground; dividers become 25% white-mix. Same ramps, same rules, inverted assignment — not a CSS filter-invert.</p>
+
+<h2>5. Typography System</h2>
+<p>Single-family system by design: <strong>Archivo</strong> for both heading and body (<code>--font-heading</code>, weight 800; <code>--font-body</code>, weight 400), plus a system monospace stack for metadata. Archivo's grotesque, slightly architectural letterforms already carry the "structured but human" tone the brief calls for — a second display face would fight the grid rather than reinforce it.</p>
+<table class="spec-table">
+<tr><th>Role</th><th>Family / weight</th><th>Size</th><th>Usage</th></tr>
+<tr><td>Display / H1</td><td>Archivo 800</td><td>42–56px</td><td>Hero statement, case-study title</td></tr>
+<tr><td>H2</td><td>Archivo 800</td><td>32px</td><td>Section headers</td></tr>
+<tr><td>H3</td><td>Archivo 800</td><td>25px</td><td>Card/module titles</td></tr>
+<tr><td>H4</td><td>Archivo 800</td><td>20px</td><td>Sub-headers, resume entry titles</td></tr>
+<tr><td>Body</td><td>Archivo 400</td><td>15–16px / 1.55–1.6</td><td>Paragraphs</td></tr>
+<tr><td>Small / meta</td><td>Archivo 400</td><td>13px</td><td>Card body, captions</td></tr>
+<tr><td>Label (H6-style)</td><td>Archivo 800, 0.08em tracking, uppercase</td><td>11–12px</td><td>Kickers, tags, card meta</td></tr>
+<tr><td>Technical / mono</td><td>ui-monospace stack</td><td>12–13px</td><td>Dates, stack names, timestamps, "role:" labels</td></tr>
+</table>
+<p class="text-muted">Rationale: one grotesque family kept consistent end-to-end signals engineering discipline; the monospace layer is reserved strictly for system-like metadata (never body copy), so it reads as "operational label," not "code aesthetic."</p>
+
+<h2>6. Spacing System</h2>
+<table class="spec-table">
+<tr><th>Token</th><th>Value</th></tr>
+<tr><td><code>--space-1</code></td><td>4px — icon gaps</td></tr>
+<tr><td><code>--space-2</code></td><td>8px — tight stacks, tag padding</td></tr>
+<tr><td><code>--space-3</code></td><td>12px — card padding, paragraph gaps</td></tr>
+<tr><td><code>--space-4</code></td><td>16px — component gaps</td></tr>
+<tr><td><code>--space-6</code></td><td>24px — module gaps</td></tr>
+<tr><td><code>--space-8</code></td><td>32px — section gaps, mobile</td></tr>
+</table>
+<p>Semantic additions layered on top for page-level rhythm: <code>--space-section</code> 96px desktop / 56px mobile; <code>--space-page-gutter</code> 48px desktop / 20px mobile; <code>--content-width-reading</code> 680px; <code>--content-width-project</code> 920px; <code>--content-width-max</code> 1200px.</p>
+
+<h2>7. Layout &amp; Grid System</h2>
+<p>12-column grid on desktop, 24px gap, max content width 1200px, gutters scale with viewport. The grid stays <em>visible</em> — thin dividers mark column/section boundaries on the homepage and case study, per Modernist's architectural direction.</p>
+<table class="spec-table">
+<tr><th>Breakpoint</th><th>Range</th><th>Columns</th><th>Behaviour</th></tr>
+<tr><td>Mobile</td><td>&lt;600px</td><td>1 (4 logical)</td><td>Single column, nav collapses to a menu, decorative rules removed</td></tr>
+<tr><td>Tablet</td><td>600–899px</td><td>6</td><td>Two-column project grid, nav stays inline</td></tr>
+<tr><td>Laptop</td><td>900–1279px</td><td>12</td><td>Full nav, 2–3 col project grid</td></tr>
+<tr><td>Desktop</td><td>1280–1679px</td><td>12</td><td>Editorial asymmetry (hero: 7/5 split)</td></tr>
+<tr><td>Large desktop</td><td>≥1680px</td><td>12, wider gutter</td><td>Content width capped at 1200px, extra space becomes margin, not stretched content</td></tr>
+</table>
+
+<h2>8. Shape, Surface &amp; Elevation</h2>
+<p><code>--radius-*</code> is 0 everywhere — no rounded corners, per system. Surfaces are separated by the 2px <code>.hr</code> rule and by fill (<code>--color-surface</code> vs <code>--color-bg</code>), not by shadow. Elevation (<code>--shadow-sm/md/lg</code>) is reserved for the one truly "floating" object in the whole system: the contact-form card and modal dialogs. Cards otherwise sit flush in the grid with a divider, never a shadow.</p>
+
+<h2>9. Motion System</h2>
+<table class="spec-table">
+<tr><th>Token</th><th>Value</th><th>Use</th></tr>
+<tr><td><code>--motion-fast</code></td><td>120ms, ease-out</td><td>Hover fills, tag states</td></tr>
+<tr><td><code>--motion-base</code></td><td>200ms, cubic-bezier(.2,.8,.2,1)</td><td>Card emphasis, nav underline</td></tr>
+<tr><td><code>--motion-reveal</code></td><td>420ms, ease-out, 60ms stagger</td><td>Section content on first scroll into view</td></tr>
+</table>
+<p>Signature behaviour: project cards respond to hover by raising text weight and running the accent underline under the title — no scale/tilt/shadow-pop. Section reveals fade + rise 8px, staggered by child, once, never re-triggered on re-scroll. All motion respects <code>prefers-reduced-motion</code>: reveals render in final state instantly, hover fills still apply (they're not "motion" for accessibility purposes).</p>
+
+<h2>10. Complete Design Token Architecture</h2>
+<p>Three tiers, consistent with Modernist's own token file:</p>
+<table class="spec-table">
+<tr><th>Tier</th><th>Examples</th></tr>
+<tr><td>Primitive</td><td><code>--color-accent-500</code>, <code>--space-4</code>, <code>--font-heading</code>, <code>--radius-md</code></td></tr>
+<tr><td>Semantic</td><td><code>--color-action-primary</code> → <code>--color-accent</code>; <code>--color-text-secondary</code> → <code>--color-neutral-700</code></td></tr>
+<tr><td>Component</td><td><code>--project-card-padding</code> → <code>--space-3</code>; <code>--resume-entry-gap</code> → <code>--space-4</code>; <code>--tag-bg</code> → <code>--color-accent-100</code></td></tr>
+</table>
+<p class="text-muted">Naming: <code>--{category}-{role}-{variant?}</code>, all kebab-case, directly portable to Figma Variables (category/role/variant collections) and Tailwind (<code>colors.action.primary</code>, etc).</p>
+
+<h2>11. Component Library</h2>
+<table class="spec-table">
+<tr><th>Component</th><th>Built from</th><th>Notes</th></tr>
+<tr><td>Header nav</td><td><code>.nav</code> + <code>.nav-brand</code></td><td>Sticky, 2px bottom divider; Resume + Contact always visible</td></tr>
+<tr><td>Mobile nav</td><td><code>.nav</code> collapsed + full-bleed overlay</td><td>44px min touch targets, focus-trapped</td></tr>
+<tr><td>Buttons</td><td><code>.btn-primary/secondary/ghost/icon/block</code></td><td>Primary = accent fill, flush-left label</td></tr>
+<tr><td>Project card / Featured module</td><td><code>.card</code> + <code>.card-kicker/title/body/meta</code></td><td>Featured (gelato) variant spans 8/12 cols with a photograph</td></tr>
+<tr><td>Technology tag</td><td><code>.tag-accent/neutral/outline</code></td><td>Outline = "exploring," filled = "working with"</td></tr>
+<tr><td>Evidence callout</td><td><code>.card</code> + accent-left rule variant</td><td>Pull-quote style, used once per page max</td></tr>
+<tr><td>Timeline / Experience / Education entry</td><td><code>.table</code>-based row + mono date column</td><td>Shared component across About, Resume</td></tr>
+<tr><td>Skills / technical-interest module</td><td><code>.tag</code> grid, grouped by "foundation / exploring / future"</td><td>Not a flat cloud — three labelled tiers</td></tr>
+<tr><td>Contact CTA / form</td><td><code>.card.elev-md</code> + <code>.field/.input</code></td><td>Only floating card in the system</td></tr>
+<tr><td>Footer / social links</td><td><code>.btn-ghost</code> row + <code>.hr</code> above</td><td>GitHub + email only, no icon soup</td></tr>
+</table>
+
+<h2>12. Page-by-Page Design System</h2>
+<table class="spec-table">
+<tr><th>Page</th><th>Hierarchy</th></tr>
+<tr><td>Homepage</td><td>Identity/positioning → immediate evidence strip → featured gelato module → how she thinks (3 pillars) → future direction → selected work → resume/contact CTA</td></tr>
+<tr><td>About</td><td>Portrait + narrative → operational background (Gelato Messina, hospitality) → growth story (the retake, kept brief) → curiosity/AI → languages &amp; personality, restrained</td></tr>
+<tr><td>Projects</td><td>Gelato case study featured full-width; remaining/future projects as a lighter grid with visible "more experiments coming" slot</td></tr>
+<tr><td>Case study</td><td>Context → the problem she observed as manager → goal/role/constraints → what she built → key functionality → technical decisions → before/after workflow → outcome (honest, non-quantified) → what she learned</td></tr>
+<tr><td>Resume</td><td>Name/contact → profile → education → experience → projects (elevated placement) → technical &amp; soft skills → languages</td></tr>
+<tr><td>Contact</td><td>Direct statement of openness to grad/junior roles → email/phone/GitHub → short form</td></tr>
+</table>
+
+<h2>13. Project &amp; Case Study System</h2>
+<p>Three depth tiers so the system scales as new work appears:</p>
+<table class="spec-table">
+<tr><th>Tier</th><th>Content</th><th>Used for</th></tr>
+<tr><td>Snapshot</td><td>Title, one-line description, 2–3 tags</td><td>Placeholder/future project slots</td></tr>
+<tr><td>Standard page</td><td>Context, problem, what was built, stack, one learning note</td><td>Future personal/university projects</td></tr>
+<tr><td>Full case study</td><td>All 9 modular blocks in section 12</td><td>Gelato Messina application (the only current tier-3 project)</td></tr>
+</table>
+
+<h2>14. Resume / CV System</h2>
+<p>Print-first, ATS-conscious: single column, no tables-as-layout, real <code>&lt;h1&gt;–&lt;h3&gt;</code> hierarchy, Archivo throughout (renders as a clean sans if unavailable — no glyph loss), accent used only for the name rule and section-label colour, both of which survive as pure black in grayscale printing.</p>
+<table class="spec-table">
+<tr><th>Section</th><th>Source</th></tr>
+<tr><td>Header</td><td>Virginia Perpetua · Melbourne, AU · virgiperpetua@gmail.com · 0480 369 666 · github.com/virgiperpetua</td></tr>
+<tr><td>Profile</td><td>IT student, Kaplan Business School; hands-on operational/data background; transitioning into full-stack engineering</td></tr>
+<tr><td>Education</td><td>BIT, Kaplan Business School (2024–present); Informatic Engineering, Universidad Blas Pascal (2015–2018); Web Design Course (2015)</td></tr>
+<tr><td>Projects</td><td>Gelato Messina production &amp; stock tool — given equal visual prominence to Experience, per early-career prioritisation</td></tr>
+<tr><td>Experience</td><td>Store Manager, Gelato Messina (2025–present); Front of House, Sidekicker (2022–2025); Waitress, hotel group (2019–2021); Secretary, JB Srur Real Estate (2016–2018)</td></tr>
+<tr><td>Skills</td><td>Technical: HTML/CSS, Microsoft 365, data entry/reporting, inventory &amp; rostering systems — plus current learning: JS/TS, Python, SQL, Git. Soft: leadership, communication, adaptability</td></tr>
+<tr><td>Languages</td><td>Spanish (native), English (fluent), Italian (fluent)</td></tr>
+</table>
+
+<h2>15. Responsive Rules</h2>
+<table class="spec-table">
+<tr><th>Breakpoint</th><th>Priority change</th></tr>
+<tr><td>Mobile</td><td>Identity + strongest evidence + resume/contact only above the fold; nav → menu; grid rules removed; case-study blocks stack 1-up</td></tr>
+<tr><td>Tablet</td><td>2-col project grid; case study intro becomes 2-col (text/photo)</td></tr>
+<tr><td>Laptop</td><td>Full nav + 12-col grid active; 3-col project grid</td></tr>
+<tr><td>Large desktop</td><td>Editorial asymmetric hero (7/5); content still capped at 1200px — extra space is margin</td></tr>
+</table>
+
+<h2>16. Accessibility Rules</h2>
+<ul style="font-size:14px;line-height:1.7">
+<li>Text on <code>--color-bg</code>/<code>--color-surface</code> uses <code>--color-text</code> (12.6:1) or neutral-700 (7:1+) — never the raw accent for body copy (use accent-700, 4.9:1+)</li>
+<li>Minimum body size 15px site-wide, 12pt print on resume</li>
+<li>All interactive elements keyboard-reachable in DOM order; visible 2px accent <code>:focus-visible</code> ring, never suppressed</li>
+<li>Touch targets ≥44×44px on mobile nav and buttons</li>
+<li>Semantic landmark structure: one <code>&lt;h1&gt;</code> per page, nav/main/footer landmarks, case-study blocks as <code>&lt;section&gt;</code> with labelled headings</li>
+<li><code>prefers-reduced-motion</code> disables reveal/stagger animation, keeps instant hover-fill feedback</li>
+<li>Theme toggle (light default / dark) preserves contrast ratios in both states; announced via <code>aria-pressed</code></li>
+</ul>
+
+<h2>17. Design System Governance</h2>
+<ul style="font-size:14px;line-height:1.7">
+<li><strong>Naming:</strong> <code>--{category}-{role}-{variant}</code>, primitives never referenced directly in page code — always through a semantic token</li>
+<li><strong>New colour:</strong> not permitted without a documented semantic gap; the accent ramp already covers emphasis, warning-adjacent, and "exploring" states</li>
+<li><strong>New typography:</strong> no new family without a role Archivo genuinely cannot serve (none identified at this stage)</li>
+<li><strong>Component reuse:</strong> a new page composes existing components before any new one is authored; a component is promoted from "one-off" to library only after appearing on 2+ pages</li>
+<li><strong>Career-stage evolution:</strong> Student → Graduate → Junior → Professional is handled by swapping <em>content</em> (resume entries, project tiers, headline) — never by a token or component redesign</li>
+</ul>
+
+<h2>18. Implementation Notes</h2>
+<ul style="font-size:14px;line-height:1.7">
+<li>Every page loads Modernist's <code>styles.css</code> + <code>_ds_bundle.js</code>; no page hard-codes a hex, px, or font outside these tokens</li>
+<li>Photography: portrait and any future project imagery always wrapped in <code>.grayscale</code></li>
+<li>Resume page doubles as the printable CV — built for clean print output, no on-screen-only chrome</li>
+<li>Case study built at "full case study" tier now; Standard/Snapshot tiers ready for future personal projects without new components</li>
+</ul>
+
+<h2>19. Final Visual Direction Summary</h2>
+<p style="font-size:16px">A flat, gridded, Archivo-set system in ink on warm off-white, with one deliberate accent spent only on hierarchy and conviction. The gelato tool leads every page it can — proof that this is someone who turns a shift on the floor into a working system. Everything else — the retake, the languages, the curiosity about AI — sits inside that same disciplined structure, visible but never louder than the evidence.</p>
+
+</doc-page>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#f3f2f2"/><rect x="30" y="30" width="140" height="8" fill="#201e1d"/><rect x="30" y="60" width="90" height="8" fill="#ec3013"/><rect x="30" y="90" width="140" height="4" fill="#201e1d"/><rect x="30" y="105" width="140" height="4" fill="#201e1d"/><rect x="30" y="120" width="100" height="4" fill="#201e1d"/></svg></template>
+
+</x-dc>
+</body>
+</html>
