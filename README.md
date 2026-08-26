@@ -27,7 +27,7 @@ src/og-image/                              # social share art
 src/banners/                               # campaign / LinkedIn composites
 src/screenshots/pages/                     # full-page design captures
 docs/design-export/                        # Markdown specs paired with screenshots
-dist/                                      # publish tree (mirrors src binaries)
+dist/                                      # generated publish tree (gitignored; built for Pages)
 portfolio/                                 # Claude Design source (*.dc.html)
 ```
 

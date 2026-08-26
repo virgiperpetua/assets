@@ -18,8 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Ensure CNAME
-        run: echo 'assets.design.virgiperpetua.com' > dist/CNAME
+      - name: Build dist from src
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          rsync -a --exclude 'CNAME' src/ dist/
+          echo 'assets.design.virgiperpetua.com' > dist/CNAME
+          test -f dist/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
