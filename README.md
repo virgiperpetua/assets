@@ -1,8 +1,10 @@
 # Virginia Perpetua Assets
 
+> **Primary:** GitHub. GitLab (`virginia-perpetua/design-system/*`) is a mirror.
+
 Binary brand assets — wordmark, VP mark, portrait, banners, Open Graph / LinkedIn art, and page screenshots from the Claude Design portfolio.
 
-Token values live in [`tokens`](https://gitlab.com/virginia-perpetua/design-system/tokens). Marketing pages live in [`marketing`](https://gitlab.com/virginia-perpetua/design-system/marketing). Brand rules: [BRAND.md](./BRAND.md). Design export specs: [docs/design-export/](./docs/design-export/).
+Token values live in [`tokens`](https://github.com/virgiperpetua/tokens). Marketing pages live in [`marketing`](https://github.com/virgiperpetua/marketing). Brand rules: [BRAND.md](./BRAND.md). Design export specs: [docs/design-export/](./docs/design-export/).
 
 ## At a glance
 
