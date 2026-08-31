@@ -10,13 +10,15 @@ Token values live in [`tokens`](https://github.com/virgiperpetua/tokens). Market
 
 ## At a glance
 
+Previews link into `src/` — the committed source tree. `dist/` is generated at build time and is not in the repo.
+
 | Asset | Preview | Default download |
 | ----- | ------- | ---------------- |
-| **Dark mark** (512) | [<img src="./dist/logo/mark/dark/bg-none/512.png" alt="Dark mark" width="96" height="96">](./dist/logo/mark/dark/bg-none/512.png) | [512.png](./dist/logo/mark/dark/bg-none/512.png) |
-| **Light mark** (512) | [<img src="./dist/logo/mark/light/bg-none/512.png" alt="Light mark" width="96" height="96">](./dist/logo/mark/light/bg-none/512.png) | [512.png](./dist/logo/mark/light/bg-none/512.png) |
-| **Wordmark dark** | [<img src="./dist/logo/wordmark/dark/bg-none/640.png" alt="Wordmark dark" width="240">](./dist/logo/wordmark/dark/bg-none/640.png) | [640.png](./dist/logo/wordmark/dark/bg-none/640.png) |
-| **Portrait** | [<img src="./dist/photo/virginia-photo.png" alt="Portrait" width="96" height="96">](./dist/photo/virginia-photo.png) | [virginia-photo.png](./dist/photo/virginia-photo.png) |
-| **LinkedIn / OG banner** | [<img src="./dist/og-image/linkedin-banner.png" alt="OG banner" width="240">](./dist/og-image/linkedin-banner.png) | [linkedin-banner.png](./dist/og-image/linkedin-banner.png) |
+| **Dark mark** (512) | [<img src="./src/logo/mark/dark/bg-none/512.png" alt="Dark mark" width="96" height="96">](./src/logo/mark/dark/bg-none/512.png) | [512.png](./src/logo/mark/dark/bg-none/512.png) |
+| **Light mark** (512) | [<img src="./src/logo/mark/light/bg-none/512.png" alt="Light mark" width="96" height="96">](./src/logo/mark/light/bg-none/512.png) | [512.png](./src/logo/mark/light/bg-none/512.png) |
+| **Wordmark dark** | [<img src="./src/logo/wordmark/dark/bg-none/640.png" alt="Wordmark dark" width="240">](./src/logo/wordmark/dark/bg-none/640.png) | [640.png](./src/logo/wordmark/dark/bg-none/640.png) |
+| **Portrait** | [<img src="./src/photo/virginia-photo.png" alt="Portrait" width="96" height="96">](./src/photo/virginia-photo.png) | [virginia-photo.png](./src/photo/virginia-photo.png) |
+| **LinkedIn / OG banner** | [<img src="./src/og-image/linkedin-banner.png" alt="OG banner" width="240">](./src/og-image/linkedin-banner.png) | [linkedin-banner.png](./src/og-image/linkedin-banner.png) |
 
 ## Layout
 
