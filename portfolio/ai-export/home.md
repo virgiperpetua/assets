@@ -23,7 +23,7 @@ image_slots:
 
 Full-stack engineer in training, currently exploring AI and automation. I manage a gelato store by day and build the tools that store actually needed — the same instinct for noticing what's broken, now pointed at bigger problems.
 
-- View the gelato project → `Projects.dc.html#gelato`
+- View the gelato project → `Projects.dc.html#gelato-case-study`
 
 - Resume → `Resume.dc.html`
 
@@ -33,7 +33,7 @@ Full-stack engineer in training, currently exploring AI and automation. I manage
 
 As Store Manager at Gelato Messina, I kept seeing the same problem: knowing which flavours needed churning, how much stock was left, and when production should start meant constantly checking a phone or walking the floor. So I built a tool that shows it at a glance — flavour status, stock consumption, and churn timing, in one screen.
 
-- Read the full case study → → `Projects.dc.html#gelato-case-study`
+- View full case study → `Projects.dc.html#gelato-case-study`
 
 ## Three ideas I keep coming back to
 
